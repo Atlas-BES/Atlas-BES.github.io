@@ -3,1801 +3,858 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Atlas — GitHub</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<title>Atlas — Tech Extremist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --gold: #c9a84c;
-    --gold-light: #e8c97a;
-    --gold-dim: #7a5f28;
-    --black: #080808;
-    --dark: #0f0f0f;
-    --dark2: #151515;
-    --dark3: #1a1a1a;
-    --white: #f0ede6;
-    --grey: #888;
-  }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--black);
-    color: var(--white);
-    font-family: 'EB Garamond', serif;
-    overflow-x: hidden;
-    cursor: none;
-  }
-
-  /* CUSTOM CURSOR */
-  .cursor {
-    position: fixed;
-    width: 12px; height: 12px;
-    background: var(--gold);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%, -50%);
-    transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
-    mix-blend-mode: difference;
-  }
-  .cursor-ring {
-    position: fixed;
-    width: 36px; height: 36px;
-    border: 1px solid var(--gold);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9998;
-    transform: translate(-50%, -50%);
-    transition: transform 0.18s ease, width 0.3s, height 0.3s;
-    opacity: 0.6;
-  }
-
-  /* CHESS BOARD BACKGROUND */
-  .board-bg {
-    position: fixed;
-    inset: 0;
-    background-image:
-      repeating-conic-gradient(#111 0% 25%, #0a0a0a 0% 50%);
-    background-size: 60px 60px;
-    opacity: 0.35;
-    z-index: 0;
-    pointer-events: none;
-  }
-
-  /* NAV */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1.2rem 3rem;
-    background: linear-gradient(to bottom, rgba(8,8,8,0.97) 0%, transparent 100%);
-    border-bottom: 1px solid rgba(201,168,76,0.15);
-  }
-
-  .nav-logo {
-    font-family: 'Cinzel Decorative', serif;
-    font-size: 1.4rem;
-    color: var(--gold);
-    letter-spacing: 0.12em;
-    text-shadow: 0 0 30px rgba(201,168,76,0.5);
-    animation: flicker 4s infinite;
-  }
-
-  .nav-links {
-    display: flex;
-    gap: 2.5rem;
-    list-style: none;
-  }
-
-  .nav-links a {
-    font-family: 'Cinzel', serif;
-    font-size: 0.75rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--grey);
-    text-decoration: none;
-    transition: color 0.3s;
-    position: relative;
-  }
-
-  .nav-links a::after {
-    content: '';
-    position: absolute;
-    bottom: -4px; left: 0; right: 0;
-    height: 1px;
-    background: var(--gold);
-    transform: scaleX(0);
-    transition: transform 0.3s;
-  }
-
-  .nav-links a:hover { color: var(--gold); }
-  .nav-links a:hover::after { transform: scaleX(1); }
-
-  /* SECTIONS */
-  section {
-    position: relative;
-    z-index: 1;
-    min-height: 100vh;
-  }
-
-  /* HERO */
-  #hero {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 100px 2rem 4rem;
-    overflow: hidden;
-  }
-
-  .hero-king {
-    font-size: 6rem;
-    line-height: 1;
-    margin-bottom: 1rem;
-    animation: float 4s ease-in-out infinite;
-    filter: drop-shadow(0 0 30px rgba(201,168,76,0.6));
-  }
-
-  .hero-title {
-    font-family: 'Cinzel Decorative', serif;
-    font-size: clamp(3rem, 8vw, 7rem);
-    font-weight: 900;
-    color: var(--gold);
-    letter-spacing: 0.08em;
-    line-height: 1;
-    text-shadow:
-      0 0 60px rgba(201,168,76,0.4),
-      0 0 120px rgba(201,168,76,0.15);
-    animation: reveal-up 1s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  .hero-sub {
-    font-family: 'Cinzel', serif;
-    font-size: clamp(0.7rem, 1.5vw, 0.9rem);
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    color: var(--gold-dim);
-    margin-top: 1rem;
-    animation: reveal-up 1s 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  .hero-divider {
-    width: 200px;
-    height: 1px;
-    background: linear-gradient(to right, transparent, var(--gold), transparent);
-    margin: 2rem auto;
-    animation: reveal-up 1s 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  .hero-desc {
-    font-size: 1.2rem;
-    font-style: italic;
-    color: rgba(240,237,230,0.65);
-    max-width: 480px;
-    line-height: 1.7;
-    animation: reveal-up 1s 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  .hero-cta {
-    margin-top: 3rem;
-    display: flex;
-    gap: 1.5rem;
-    animation: reveal-up 1s 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
-  }
-
-  .btn {
-    font-family: 'Cinzel', serif;
-    font-size: 0.72rem;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    padding: 0.9rem 2.4rem;
-    border: 1px solid var(--gold);
-    background: transparent;
-    color: var(--gold);
-    text-decoration: none;
-    cursor: none;
-    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .btn::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--gold);
-    transform: translateX(-100%);
-    transition: transform 0.35s cubic-bezier(0.16,1,0.3,1);
-    z-index: 0;
-  }
-
-  .btn:hover::before { transform: translateX(0); }
-  .btn:hover { color: var(--black); box-shadow: 0 0 40px rgba(201,168,76,0.3); }
-  .btn span { position: relative; z-index: 1; }
-
-  .btn-ghost {
-    border-color: rgba(201,168,76,0.3);
-    color: rgba(240,237,230,0.5);
-  }
-  .btn-ghost::before { background: rgba(201,168,76,0.1); }
-  .btn-ghost:hover { color: var(--gold); }
-
-  /* FLOATING PIECES */
-  .piece {
-    position: fixed;
-    pointer-events: none;
-    color: var(--gold);
-    z-index: 0;
-    will-change: transform, opacity;
-    user-select: none;
-  }
-
-  /* Multiple drift trajectories */
-  @keyframes drift-straight {
-    0%   { transform: translateY(110vh) rotate(0deg) scale(1); opacity: 0; }
-    5%   { opacity: var(--op); }
-    95%  { opacity: var(--op); }
-    100% { transform: translateY(-15vh) rotate(360deg) scale(1); opacity: 0; }
-  }
-  @keyframes drift-sway {
-    0%   { transform: translateY(110vh) translateX(0) rotate(0deg); opacity: 0; }
-    5%   { opacity: var(--op); }
-    25%  { transform: translateY(70vh) translateX(60px) rotate(90deg); }
-    50%  { transform: translateY(40vh) translateX(-40px) rotate(180deg); }
-    75%  { transform: translateY(15vh) translateX(50px) rotate(270deg); }
-    95%  { opacity: var(--op); }
-    100% { transform: translateY(-15vh) translateX(0px) rotate(360deg); opacity: 0; }
-  }
-  @keyframes drift-diagonal {
-    0%   { transform: translate(0, 110vh) rotate(0deg); opacity: 0; }
-    5%   { opacity: var(--op); }
-    95%  { opacity: var(--op); }
-    100% { transform: translate(80px, -15vh) rotate(-270deg); opacity: 0; }
-  }
-  @keyframes drift-diagonal-rev {
-    0%   { transform: translate(0, 110vh) rotate(0deg); opacity: 0; }
-    5%   { opacity: var(--op); }
-    95%  { opacity: var(--op); }
-    100% { transform: translate(-80px, -15vh) rotate(270deg); opacity: 0; }
-  }
-  @keyframes drift-zigzag {
-    0%   { transform: translateY(110vh) translateX(0) rotate(0deg); opacity: 0; }
-    5%   { opacity: var(--op); }
-    20%  { transform: translateY(80vh) translateX(80px) rotate(72deg); }
-    40%  { transform: translateY(55vh) translateX(-60px) rotate(144deg); }
-    60%  { transform: translateY(30vh) translateX(90px) rotate(216deg); }
-    80%  { transform: translateY(10vh) translateX(-70px) rotate(288deg); }
-    95%  { opacity: var(--op); }
-    100% { transform: translateY(-15vh) translateX(0) rotate(360deg); opacity: 0; }
-  }
-  @keyframes drift-spin-slow {
-    0%   { transform: translateY(110vh) rotate(0deg) scale(0.8); opacity: 0; }
-    5%   { opacity: var(--op); }
-    50%  { transform: translateY(45vh) rotate(720deg) scale(1.2); }
-    95%  { opacity: var(--op); }
-    100% { transform: translateY(-15vh) rotate(1440deg) scale(0.8); opacity: 0; }
-  }
-  @keyframes drift-float-h {
-    0%   { transform: translateX(-8vw) translateY(0) rotate(0deg); opacity: 0; }
-    5%   { opacity: var(--op); }
-    50%  { transform: translateX(108vw) translateY(-30px) rotate(180deg); opacity: var(--op); }
-    51%  { opacity: 0; }
-    100% { transform: translateX(108vw) translateY(-30px) rotate(180deg); opacity: 0; }
-  }
-  @keyframes drift-float-h-rev {
-    0%   { transform: translateX(108vw) translateY(0) rotate(0deg); opacity: 0; }
-    5%   { opacity: var(--op); }
-    50%  { transform: translateX(-8vw) translateY(20px) rotate(-180deg); opacity: var(--op); }
-    51%  { opacity: 0; }
-    100% { transform: translateX(-8vw) translateY(20px) rotate(-180deg); opacity: 0; }
-  }
-
-  /* SECTION COMMON */
-  .section-inner {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 7rem 2rem;
-  }
-
-  .section-label {
-    font-family: 'Cinzel', serif;
-    font-size: 0.68rem;
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    color: var(--gold-dim);
-    margin-bottom: 0.8rem;
-  }
-
-  .section-title {
-    font-family: 'Cinzel Decorative', serif;
-    font-size: clamp(2rem, 4vw, 3.2rem);
-    color: var(--gold);
-    margin-bottom: 0.5rem;
-    text-shadow: 0 0 40px rgba(201,168,76,0.2);
-  }
-
-  .section-rule {
-    width: 80px;
-    height: 1px;
-    background: linear-gradient(to right, var(--gold), transparent);
-    margin-bottom: 3.5rem;
-  }
-
-  /* ABOUT */
-  #about {
-    background: linear-gradient(to bottom, transparent, rgba(201,168,76,0.03), transparent);
-  }
-
-  .about-grid {
-    display: grid;
-    grid-template-columns: 1fr 1.2fr;
-    gap: 6rem;
-    align-items: center;
-  }
-
-  .about-board {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 1;
-    max-width: 380px;
-  }
-
-  .chess-board-art {
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    grid-template-rows: repeat(8, 1fr);
-    width: 100%;
-    height: 100%;
-    border: 2px solid rgba(201,168,76,0.3);
-    box-shadow:
-      0 0 60px rgba(201,168,76,0.08),
-      inset 0 0 30px rgba(0,0,0,0.5);
-  }
-
-  .chess-cell {
-    aspect-ratio: 1;
-    transition: background 0.3s;
-  }
-
-  .chess-cell.light { background: rgba(201,168,76,0.1); }
-  .chess-cell.dark  { background: rgba(201,168,76,0.03); }
-  .chess-cell:hover { background: rgba(201,168,76,0.25) !important; }
-
-  .board-piece-overlay {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 5rem;
-    animation: float 3s ease-in-out infinite;
-    filter: drop-shadow(0 0 20px rgba(201,168,76,0.8));
-    pointer-events: none;
-  }
-
-  .about-text .section-title { margin-bottom: 1.5rem; }
-
-  .about-text p {
-    font-size: 1.15rem;
-    line-height: 1.9;
-    color: rgba(240,237,230,0.75);
-    margin-bottom: 1.2rem;
-  }
-
-  .about-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.7rem;
-    margin-top: 2rem;
-  }
-
-  .tag {
-    font-family: 'Cinzel', serif;
-    font-size: 0.62rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    padding: 0.45rem 1.1rem;
-    border: 1px solid rgba(201,168,76,0.3);
-    color: var(--gold-dim);
-    transition: all 0.3s;
-  }
-
-  .tag:hover {
-    border-color: var(--gold);
-    color: var(--gold);
-    background: rgba(201,168,76,0.06);
-  }
-
-  /* PROJECTS */
-  #projects { background: var(--dark); }
-
-  .projects-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5px;
-  }
-
-  .project-card {
-    position: relative;
-    background: var(--dark2);
-    padding: 2.5rem 2rem;
-    border: 1px solid rgba(201,168,76,0.08);
-    overflow: hidden;
-    transition: border-color 0.4s, transform 0.4s;
-    cursor: none;
-  }
-
-  .project-card::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(201,168,76,0.05) 0%, transparent 60%);
-    opacity: 0;
-    transition: opacity 0.4s;
-  }
-
-  .project-card:hover {
-    border-color: rgba(201,168,76,0.4);
-    transform: translateY(-4px);
-  }
-
-  .project-card:hover::before { opacity: 1; }
-
-  .project-piece {
-    font-size: 2.5rem;
-    margin-bottom: 1.2rem;
-    display: block;
-    filter: grayscale(0.4);
-    transition: filter 0.3s, transform 0.3s;
-  }
-
-  .project-card:hover .project-piece {
-    filter: grayscale(0);
-    transform: scale(1.1);
-  }
-
-  .project-name {
-    font-family: 'Cinzel', serif;
-    font-size: 1rem;
-    color: var(--gold-light);
-    margin-bottom: 0.8rem;
-    letter-spacing: 0.05em;
-  }
-
-  .project-desc {
-    font-size: 0.95rem;
-    line-height: 1.7;
-    color: rgba(240,237,230,0.5);
-    margin-bottom: 1.5rem;
-  }
-
-  .project-stack {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .stack-pill {
-    font-family: 'Cinzel', serif;
-    font-size: 0.55rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    padding: 0.25rem 0.7rem;
-    background: rgba(201,168,76,0.08);
-    color: var(--gold-dim);
-    border: 1px solid rgba(201,168,76,0.15);
-  }
-
-  .project-link {
-    position: absolute;
-    bottom: 1.5rem;
-    right: 1.5rem;
-    font-size: 1.2rem;
-    color: rgba(201,168,76,0.3);
-    transition: color 0.3s, transform 0.3s;
-    text-decoration: none;
-    cursor: none;
-  }
-
-  .project-card:hover .project-link {
-    color: var(--gold);
-    transform: translate(2px, -2px);
-  }
-
-  .project-number {
-    position: absolute;
-    top: 1.5rem;
-    right: 1.5rem;
-    font-family: 'Cinzel Decorative', serif;
-    font-size: 3rem;
-    color: rgba(201,168,76,0.04);
-    line-height: 1;
-    pointer-events: none;
-    transition: color 0.4s;
-  }
-
-  .project-card:hover .project-number {
-    color: rgba(201,168,76,0.08);
-  }
-
-  /* VIDEOS */
-  #videos {
-    background: linear-gradient(to bottom, var(--dark), var(--black));
-  }
-
-  .videos-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
-  }
-
-  .video-card {
-    position: relative;
-    cursor: none;
-    group: true;
-  }
-
-  .video-thumb {
-    width: 100%;
-    aspect-ratio: 16/9;
-    background: var(--dark2);
-    border: 1px solid rgba(201,168,76,0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-    transition: border-color 0.3s;
-  }
-
-  .video-card:hover .video-thumb {
-    border-color: rgba(201,168,76,0.4);
-  }
-
-  .video-chess-bg {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    grid-template-columns: repeat(16, 1fr);
-    grid-template-rows: repeat(9, 1fr);
-    opacity: 0.05;
-    transition: opacity 0.4s;
-  }
-
-  .video-card:hover .video-chess-bg { opacity: 0.12; }
-
-  .video-chess-cell.lc { background: rgba(201,168,76,0.8); }
-  .video-chess-cell.dc { background: rgba(0,0,0,0.5); }
-
-  .play-btn {
-    width: 60px; height: 60px;
-    border: 2px solid rgba(201,168,76,0.6);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-    color: var(--gold);
-    position: relative;
-    z-index: 1;
-    transition: all 0.3s;
-    background: rgba(8,8,8,0.7);
-  }
-
-  .video-card:hover .play-btn {
-    background: var(--gold);
-    color: var(--black);
-    border-color: var(--gold);
-    transform: scale(1.1);
-    box-shadow: 0 0 30px rgba(201,168,76,0.5);
-  }
-
-  .video-piece-bg {
-    position: absolute;
-    bottom: -10px; right: -10px;
-    font-size: 6rem;
-    opacity: 0.04;
-    transition: opacity 0.4s, transform 0.4s;
-  }
-
-  .video-card:hover .video-piece-bg {
-    opacity: 0.09;
-    transform: scale(1.05) rotate(5deg);
-  }
-
-  .video-info {
-    padding: 1.2rem 0 0;
-  }
-
-  .video-title {
-    font-family: 'Cinzel', serif;
-    font-size: 0.95rem;
-    color: var(--white);
-    margin-bottom: 0.5rem;
-    letter-spacing: 0.04em;
-    transition: color 0.3s;
-  }
-
-  .video-card:hover .video-title { color: var(--gold-light); }
-
-  .video-meta {
-    font-size: 0.85rem;
-    color: var(--grey);
-    font-style: italic;
-  }
-
-  /* STATS BAR */
-  .stats-bar {
-    display: flex;
-    justify-content: center;
-    gap: 0;
-    border-top: 1px solid rgba(201,168,76,0.1);
-    border-bottom: 1px solid rgba(201,168,76,0.1);
-    margin: 4rem 0;
-  }
-
-  .stat {
-    flex: 1;
-    text-align: center;
-    padding: 2.5rem 2rem;
-    border-right: 1px solid rgba(201,168,76,0.1);
-  }
-
-  .stat:last-child { border-right: none; }
-
-  .stat-num {
-    font-family: 'Cinzel Decorative', serif;
-    font-size: 2.8rem;
-    color: var(--gold);
-    display: block;
-    margin-bottom: 0.5rem;
-  }
-
-  .stat-label {
-    font-family: 'Cinzel', serif;
-    font-size: 0.62rem;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--grey);
-  }
-
-  /* FOOTER */
-  footer {
-    position: relative;
-    z-index: 1;
-    text-align: center;
-    padding: 4rem 2rem;
-    border-top: 1px solid rgba(201,168,76,0.12);
-    background: var(--black);
-  }
-
-  .footer-king {
-    font-size: 3rem;
-    display: block;
-    margin-bottom: 1rem;
-    animation: float 4s ease-in-out infinite;
-    filter: drop-shadow(0 0 15px rgba(201,168,76,0.4));
-  }
-
-  .footer-name {
-    font-family: 'Cinzel Decorative', serif;
-    font-size: 1.5rem;
-    color: var(--gold);
-    margin-bottom: 0.5rem;
-  }
-
-  .footer-copy {
-    font-size: 0.85rem;
-    color: rgba(255,255,255,0.2);
-    font-style: italic;
-    margin-top: 2rem;
-  }
-
-  .footer-links {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    margin-top: 1.5rem;
-  }
-
-  .footer-links a {
-    font-family: 'Cinzel', serif;
-    font-size: 0.65rem;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--gold-dim);
-    text-decoration: none;
-    transition: color 0.3s;
-    cursor: none;
-  }
-
-  .footer-links a:hover { color: var(--gold); }
-
-  /* SEPARATOR */
-  .sep {
-    text-align: center;
-    color: rgba(201,168,76,0.2);
-    font-size: 1.5rem;
-    margin: 0;
-    letter-spacing: 1rem;
-    overflow: hidden;
-  }
-
-  /* SCROLL INDICATOR */
-  .scroll-ind {
-    position: fixed;
-    right: 2rem;
-    top: 50%;
-    transform: translateY(-50%);
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-    z-index: 50;
-  }
-
-  .scroll-dot {
-    width: 6px; height: 6px;
-    border: 1px solid rgba(201,168,76,0.3);
-    border-radius: 50%;
-    transition: all 0.3s;
-    cursor: none;
-  }
-
-  .scroll-dot.active {
-    background: var(--gold);
-    border-color: var(--gold);
-    box-shadow: 0 0 8px rgba(201,168,76,0.6);
-  }
-
-  /* ANIMATIONS */
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-12px); }
-  }
-
-  @keyframes reveal-up {
-    from { opacity: 0; transform: translateY(30px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes flicker {
-    0%, 90%, 100% { opacity: 1; }
-    91%, 93%      { opacity: 0.7; }
-    92%, 94%      { opacity: 1; }
-  }
-
-  @keyframes scan {
-    0% { transform: translateY(-100%); }
-    100% { transform: translateY(100vh); }
-  }
-
-  /* SCAN LINE */
-  .scan-line {
-    position: fixed;
-    left: 0; right: 0;
-    height: 2px;
-    background: linear-gradient(to right, transparent, rgba(201,168,76,0.05), transparent);
-    animation: scan 6s linear infinite;
-    pointer-events: none;
-    z-index: 200;
-  }
-
-  /* FADE IN ON SCROLL */
-  .fade-in {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.8s cubic-bezier(0.16,1,0.3,1), transform 0.8s cubic-bezier(0.16,1,0.3,1);
-  }
-
-  .fade-in.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .fade-in-delay-1 { transition-delay: 0.1s; }
-  .fade-in-delay-2 { transition-delay: 0.2s; }
-  .fade-in-delay-3 { transition-delay: 0.3s; }
-  .fade-in-delay-4 { transition-delay: 0.4s; }
-  .fade-in-delay-5 { transition-delay: 0.5s; }
-
-  /* 3D BOARD SECTION */
-  #board3d {
-    position: relative;
-    z-index: 1;
-    background: linear-gradient(to bottom, var(--black), var(--dark), var(--black));
-    padding: 6rem 0 4rem;
-    overflow: hidden;
-  }
-
-  #board3d .section-inner {
-    padding-top: 0;
-    padding-bottom: 0;
-  }
-
-  .board3d-header {
-    text-align: center;
-    margin-bottom: 2rem;
-  }
-
-  #chess3d-canvas {
-    display: block;
-    width: 100%;
-    max-width: 820px;
-    margin: 0 auto;
-    aspect-ratio: 4/3;
-    border: 1px solid rgba(201,168,76,0.18);
-    box-shadow:
-      0 0 80px rgba(201,168,76,0.08),
-      0 0 160px rgba(0,0,0,0.9);
-    background: #060606;
-    cursor: grab;
-  }
-
-  #chess3d-canvas:active { cursor: grabbing; }
-
-  .board3d-controls {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 1.5rem;
-    flex-wrap: wrap;
-  }
-
-  .ctrl-btn {
-    font-family: 'Cinzel', serif;
-    font-size: 0.62rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    padding: 0.6rem 1.4rem;
-    border: 1px solid rgba(201,168,76,0.25);
-    background: transparent;
-    color: var(--gold-dim);
-    cursor: none;
-    transition: all 0.3s;
-  }
-
-  .ctrl-btn:hover {
-    border-color: var(--gold);
-    color: var(--gold);
-    background: rgba(201,168,76,0.06);
-  }
-
-  .board3d-hint {
-    text-align: center;
-    margin-top: 1rem;
-    font-size: 0.8rem;
-    font-style: italic;
-    color: rgba(255,255,255,0.2);
-    letter-spacing: 0.05em;
-  }
-
-  @media (max-width: 768px) {
-    .about-grid { grid-template-columns: 1fr; }
-    .projects-grid { grid-template-columns: 1fr; }
-    .videos-grid { grid-template-columns: 1fr; }
-    nav { padding: 1rem 1.5rem; }
-    .nav-links { display: none; }
-  }
+:root {
+  --gold: #f5c518;
+  --gold-dim: #c9a227;
+  --gold-glow: rgba(245,197,24,0.35);
+  --black: #050505;
+  --dark: #0a0a0a;
+  --panel: #0f0f0f;
+  --border: rgba(245,197,24,0.15);
+  --text: #e8e0cc;
+  --muted: #7a7060;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ─── CUSTOM CURSOR ─── */
+.cursor {
+  position: fixed; width: 12px; height: 12px;
+  background: var(--gold); border-radius: 50%;
+  pointer-events: none; z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: transform 0.1s, width 0.2s, height 0.2s, opacity 0.2s;
+  mix-blend-mode: difference;
+}
+.cursor-ring {
+  position: fixed; width: 36px; height: 36px;
+  border: 1px solid var(--gold); border-radius: 50%;
+  pointer-events: none; z-index: 9998;
+  transform: translate(-50%,-50%);
+  transition: transform 0.15s ease-out, width 0.3s, height 0.3s;
+}
+
+/* ─── CANVAS BACKGROUND ─── */
+#chessCanvas {
+  position: fixed; top:0; left:0;
+  width:100%; height:100%;
+  z-index: 0; opacity: 0.18;
+  pointer-events: none;
+}
+
+/* ─── NAV ─── */
+nav {
+  position: fixed; top:0; left:0; right:0;
+  z-index: 100;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 48px;
+  background: linear-gradient(180deg, rgba(5,5,5,0.98) 0%, transparent 100%);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 1.4rem; color: var(--gold);
+  letter-spacing: 0.2em;
+  text-shadow: 0 0 20px var(--gold-glow);
+}
+.nav-links { display: flex; gap: 36px; }
+.nav-links a {
+  font-family: 'Cinzel', serif;
+  font-size: 0.75rem; letter-spacing: 0.2em;
+  color: var(--muted); text-decoration: none;
+  text-transform: uppercase;
+  transition: color 0.3s;
+}
+.nav-links a:hover { color: var(--gold); }
+
+/* ─── HERO ─── */
+#hero {
+  position: relative; z-index: 1;
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  padding: 120px 24px 60px;
+}
+.hero-eyebrow {
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem; letter-spacing: 0.5em;
+  color: var(--gold-dim); text-transform: uppercase;
+  margin-bottom: 24px;
+  animation: fadeUp 1s ease both;
+}
+.hero-name {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(3.5rem, 10vw, 8rem);
+  font-weight: 900; line-height: 0.9;
+  color: var(--gold);
+  text-shadow: 0 0 40px rgba(245,197,24,0.4), 0 0 80px rgba(245,197,24,0.1);
+  animation: fadeUp 1s 0.2s ease both;
+  letter-spacing: -0.02em;
+}
+.hero-sub {
+  font-family: 'Cinzel', serif;
+  font-size: clamp(0.9rem, 2vw, 1.3rem);
+  color: var(--muted); letter-spacing: 0.3em;
+  margin-top: 20px; text-transform: uppercase;
+  animation: fadeUp 1s 0.4s ease both;
+}
+.hero-avatar-wrap {
+  margin: 56px auto 0;
+  position: relative; width: 200px; height: 200px;
+  animation: fadeUp 1s 0.6s ease both;
+}
+.avatar-ring {
+  position: absolute; inset: -8px;
+  border-radius: 50%;
+  background: conic-gradient(var(--gold), transparent, var(--gold-dim), transparent, var(--gold));
+  animation: spinRing 6s linear infinite;
+}
+.avatar-ring2 {
+  position: absolute; inset: -18px;
+  border-radius: 50%;
+  background: conic-gradient(transparent, var(--gold-dim), transparent);
+  animation: spinRing 10s linear infinite reverse;
+  opacity: 0.4;
+}
+.hero-avatar {
+  position: relative; z-index: 2;
+  width: 200px; height: 200px; border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(245,197,24,0.3);
+  filter: contrast(1.1) saturate(0.8);
+  transition: transform 0.4s ease, filter 0.4s ease, box-shadow 0.4s ease;
+  box-shadow: 0 0 40px rgba(245,197,24,0.25), 0 0 0 6px rgba(245,197,24,0.05);
+}
+.hero-avatar:hover {
+  transform: scale(1.08) translateY(-6px);
+  filter: contrast(1.2) saturate(1.1);
+  box-shadow: 0 20px 60px rgba(245,197,24,0.4), 0 0 0 8px rgba(245,197,24,0.1);
+}
+.hero-bio {
+  margin-top: 32px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.1rem; letter-spacing: 0.1em;
+  color: var(--text); font-weight: 300;
+  animation: fadeUp 1s 0.8s ease both;
+  max-width: 400px;
+}
+.hero-scroll {
+  margin-top: 60px;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  animation: fadeUp 1s 1s ease both;
+  color: var(--muted); font-size: 0.7rem; letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+.scroll-line {
+  width: 1px; height: 40px;
+  background: linear-gradient(180deg, var(--gold), transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+
+/* ─── 3D CHESSBOARD SECTION ─── */
+#board-section {
+  position: relative; z-index: 1;
+  padding: 80px 48px;
+  display: flex; flex-direction: column; align-items: center;
+}
+.section-label {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem; letter-spacing: 0.6em;
+  color: var(--gold-dim); text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.section-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(1.6rem, 4vw, 3rem);
+  color: var(--gold);
+  text-shadow: 0 0 30px var(--gold-glow);
+  margin-bottom: 48px;
+}
+#board3d-container {
+  perspective: 900px;
+  width: min(540px, 90vw);
+  height: min(540px, 90vw);
+  cursor: grab;
+  user-select: none;
+}
+#board3d-container:active { cursor: grabbing; }
+#board3d {
+  width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  transform: rotateX(30deg) rotateY(0deg);
+  transition: transform 0.05s linear;
+  position: relative;
+}
+.chess-grid {
+  display: grid;
+  grid-template-columns: repeat(8,1fr);
+  grid-template-rows: repeat(8,1fr);
+  width: 100%; height: 100%;
+  border: 2px solid rgba(245,197,24,0.4);
+  box-shadow: 0 0 60px rgba(245,197,24,0.2), 0 40px 80px rgba(0,0,0,0.8);
+  transform-style: preserve-3d;
+}
+.chess-cell {
+  display: flex; align-items: center; justify-content: center;
+  font-size: clamp(1rem, 2.5vw, 1.8rem);
+  transition: background 0.3s;
+  cursor: pointer;
+}
+.chess-cell.light { background: #1a1510; }
+.chess-cell.dark  { background: #0a0906; }
+.chess-cell.light:hover { background: rgba(245,197,24,0.12); }
+.chess-cell.dark:hover  { background: rgba(245,197,24,0.06); }
+.chess-cell .piece { filter: drop-shadow(0 0 6px rgba(245,197,24,0.8)); transition: transform 0.2s; }
+.chess-cell:hover .piece { transform: scale(1.2) translateY(-3px); }
+.board-controls {
+  display: flex; gap: 16px; margin-top: 24px;
+}
+.btn-ghost {
+  font-family: 'Cinzel', serif; font-size: 0.7rem; letter-spacing: 0.2em;
+  padding: 10px 24px; border: 1px solid var(--border);
+  background: transparent; color: var(--gold-dim); cursor: pointer;
+  text-transform: uppercase; transition: all 0.3s;
+}
+.btn-ghost:hover { border-color: var(--gold); color: var(--gold); background: rgba(245,197,24,0.05); }
+
+/* ─── STATS ─── */
+#stats {
+  position: relative; z-index: 1;
+  padding: 60px 48px;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 2px;
+  max-width: 900px; margin: 0 auto;
+}
+.stat-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 36px 24px;
+  text-align: center;
+  position: relative; overflow: hidden;
+  transition: border-color 0.3s, transform 0.3s;
+}
+.stat-card::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.stat-card:hover { border-color: rgba(245,197,24,0.4); transform: translateY(-4px); }
+.stat-card:hover::before { opacity: 1; }
+.stat-num {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 2.8rem; color: var(--gold);
+  line-height: 1;
+  text-shadow: 0 0 20px var(--gold-glow);
+}
+.stat-label {
+  font-family: 'Cinzel', serif; font-size: 0.65rem;
+  letter-spacing: 0.3em; color: var(--muted);
+  text-transform: uppercase; margin-top: 8px;
+}
+
+/* ─── PROJECTS ─── */
+#projects {
+  position: relative; z-index: 1;
+  padding: 80px 48px;
+  max-width: 1200px; margin: 0 auto;
+}
+.projects-header {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 48px;
+  flex-wrap: wrap; gap: 16px;
+}
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2px;
+}
+.repo-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 28px;
+  position: relative; overflow: hidden;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+.repo-card::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  transform: scaleX(0); transition: transform 0.4s;
+}
+.repo-card:hover { border-color: rgba(245,197,24,0.35); transform: translateY(-4px); }
+.repo-card:hover::after { transform: scaleX(1); }
+.repo-icon { font-size: 1.4rem; margin-bottom: 12px; }
+.repo-name {
+  font-family: 'Cinzel', serif; font-size: 0.95rem;
+  color: var(--gold); margin-bottom: 8px;
+  letter-spacing: 0.05em;
+}
+.repo-desc {
+  font-size: 0.85rem; color: var(--muted);
+  line-height: 1.6; margin-bottom: 16px;
+  min-height: 40px;
+}
+.repo-meta {
+  display: flex; gap: 16px;
+  font-size: 0.75rem; color: var(--muted);
+}
+.repo-meta span { display: flex; align-items: center; gap: 4px; }
+.lang-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--gold);
+}
+.loading-repos {
+  grid-column: 1/-1;
+  text-align: center; padding: 60px;
+  color: var(--muted); font-family: 'Cinzel', serif;
+  letter-spacing: 0.2em; font-size: 0.8rem;
+}
+
+/* ─── VIDEOS ─── */
+#videos {
+  position: relative; z-index: 1;
+  padding: 80px 48px;
+  max-width: 1200px; margin: 0 auto;
+}
+.videos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+.video-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+.video-card:hover { border-color: rgba(245,197,24,0.35); transform: translateY(-4px); }
+.video-thumb {
+  position: relative; width: 100%; padding-top: 56.25%;
+  overflow: hidden;
+}
+.video-thumb img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.4s, filter 0.4s;
+  filter: grayscale(0.3);
+}
+.video-card:hover .video-thumb img { transform: scale(1.05); filter: grayscale(0); }
+.play-overlay {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.3);
+  transition: background 0.3s;
+}
+.video-card:hover .play-overlay { background: rgba(0,0,0,0.1); }
+.play-btn {
+  width: 52px; height: 52px;
+  background: rgba(245,197,24,0.9);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.2s, background 0.2s;
+}
+.play-btn svg { fill: #000; margin-left: 4px; }
+.video-card:hover .play-btn { transform: scale(1.12); background: var(--gold); }
+.video-info { padding: 16px; }
+.video-title {
+  font-family: 'Cinzel', serif; font-size: 0.8rem;
+  color: var(--text); line-height: 1.5;
+  margin-bottom: 6px;
+  display: -webkit-box; -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical; overflow: hidden;
+}
+.video-date { font-size: 0.72rem; color: var(--muted); }
+.yt-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: 'Cinzel', serif; font-size: 0.65rem;
+  letter-spacing: 0.15em; color: var(--gold-dim);
+  margin-bottom: 32px;
+}
+.yt-icon { width: 18px; fill: #ff0000; }
+
+/* ─── FOOTER ─── */
+footer {
+  position: relative; z-index: 1;
+  border-top: 1px solid var(--border);
+  padding: 40px 48px;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+}
+.footer-logo {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 1.1rem; color: var(--gold-dim);
+}
+.footer-links { display: flex; gap: 24px; }
+.footer-links a {
+  color: var(--muted); text-decoration: none;
+  font-size: 0.75rem; letter-spacing: 0.15em;
+  font-family: 'Cinzel', serif;
+  transition: color 0.3s;
+}
+.footer-links a:hover { color: var(--gold); }
+.footer-copy {
+  color: var(--muted); font-size: 0.7rem;
+  letter-spacing: 0.1em;
+}
+
+/* ─── DIVIDER ─── */
+.divider {
+  border: none; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+  margin: 0 48px;
+}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp {
+  from { opacity:0; transform: translateY(30px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+@keyframes spinRing {
+  to { transform: rotate(360deg); }
+}
+@keyframes scrollPulse {
+  0%,100% { opacity: 0.3; }
+  50%      { opacity: 1; }
+}
+@keyframes floatPiece {
+  0%,100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-12px) rotate(5deg); }
+}
+
+.reveal {
+  opacity: 0; transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible {
+  opacity: 1; transform: translateY(0);
+}
+
+/* scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--black); }
+::-webkit-scrollbar-thumb { background: var(--gold-dim); border-radius: 2px; }
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
 
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
-<div class="board-bg"></div>
-<div class="scan-line"></div>
 
-<!-- Floating Pieces (generated by JS) -->
-<div id="piecesLayer" style="position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;"></div>
+<canvas id="chessCanvas"></canvas>
 
-<!-- NAV -->
 <nav>
-  <div class="nav-logo">♚ Atlas</div>
-  <ul class="nav-links">
-    <li><a href="#board3d">Board</a></li>
-    <li><a href="#about">About</a></li>
-    <li><a href="#projects">Projects</a></li>
-    <li><a href="#videos">Videos</a></li>
-    <li><a href="https://github.com/Atlas-BES" target="_blank">GitHub ↗</a></li>
-  </ul>
-</nav>
-
-<!-- SCROLL INDICATOR -->
-<div class="scroll-ind">
-  <div class="scroll-dot active" data-section="hero"></div>
-  <div class="scroll-dot" data-section="board3d"></div>
-  <div class="scroll-dot" data-section="about"></div>
-  <div class="scroll-dot" data-section="projects"></div>
-  <div class="scroll-dot" data-section="videos"></div>
-</div>
-
-<!-- HERO -->
-<section id="hero">
-  <div class="hero-king">♚</div>
-  <h1 class="hero-title">ATLAS</h1>
-  <p class="hero-sub">GitHub Portfolio &nbsp;·&nbsp; Tech &nbsp;·&nbsp; Design &nbsp;·&nbsp; Creation</p>
-  <div class="hero-divider"></div>
-  <p class="hero-desc">
-    <em>"The board is set, the pieces are moving."</em>
-  </p>
-  <div class="hero-cta">
-    <a href="#projects" class="btn"><span>View Projects</span></a>
-    <a href="https://github.com/Atlas-BES" target="_blank" class="btn btn-ghost"><span>GitHub Profile</span></a>
-  </div>
-</section>
-
-<!-- 3D CHESS BOARD -->
-<section id="board3d">
-  <div class="section-inner">
-    <div class="board3d-header fade-in">
-      <p class="section-label">Interactive</p>
-      <h2 class="section-title">The Board</h2>
-      <div class="section-rule" style="margin: 0 auto 0;"></div>
-    </div>
-    <canvas id="chess3d-canvas" class="fade-in fade-in-delay-2"></canvas>
-    <div class="board3d-controls fade-in fade-in-delay-3">
-      <button class="ctrl-btn" id="btn-reset">Reset View</button>
-      <button class="ctrl-btn" id="btn-top">Top View</button>
-      <button class="ctrl-btn" id="btn-side">Side View</button>
-      <button class="ctrl-btn" id="btn-spin">Auto Spin</button>
-    </div>
-    <p class="board3d-hint fade-in fade-in-delay-4">Drag to orbit &nbsp;·&nbsp; Scroll to zoom &nbsp;·&nbsp; Click a piece to highlight</p>
-  </div>
-</section>
-
-<!-- ABOUT -->
-<section id="about">
-  <div class="section-inner">
-    <div class="about-grid">
-      <div class="about-board fade-in">
-        <div class="chess-board-art" id="boardArt"></div>
-        <div class="board-piece-overlay">♚</div>
-      </div>
-      <div class="about-text">
-        <p class="section-label fade-in">The Player</p>
-        <h2 class="section-title fade-in fade-in-delay-1">About Me</h2>
-        <div class="section-rule fade-in fade-in-delay-2"></div>
-        <p class="fade-in fade-in-delay-2">
-          Tech Extremist, loves DIY projects and Creative design work.
-        </p>
-        <p class="fade-in fade-in-delay-3" style="color:rgba(240,237,230,0.5); font-size:1rem; font-style:italic;">
-          Every project is a calculated move. Every design, a strategy. Every build, a checkmate.
-        </p>
-        <div class="about-tags fade-in fade-in-delay-4">
-          <span class="tag">DIY Projects</span>
-          <span class="tag">Creative Design</span>
-          <span class="tag">Tech Extremist</span>
-          <span class="tag">Open Source</span>
-          <span class="tag">Hardware</span>
-          <span class="tag">Full Stack</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="stats-bar fade-in" id="statsBar">
-      <div class="stat">
-        <span class="stat-num" id="stat-repos">—</span>
-        <span class="stat-label">Repositories</span>
-      </div>
-      <div class="stat">
-        <span class="stat-num" id="stat-followers">—</span>
-        <span class="stat-label">Followers</span>
-      </div>
-      <div class="stat">
-        <span class="stat-num" id="stat-stars">—</span>
-        <span class="stat-label">Stars</span>
-      </div>
-      <div class="stat">
-        <span class="stat-num" id="stat-forks">—</span>
-        <span class="stat-label">Forks</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PROJECTS -->
-<section id="projects">
-  <div class="section-inner">
-    <p class="section-label fade-in">Strategic Moves</p>
-    <h2 class="section-title fade-in fade-in-delay-1">Projects</h2>
-    <div class="section-rule fade-in fade-in-delay-2"></div>
-
-    <div class="projects-grid" id="projectsGrid">
-      <!-- Populated by GitHub API -->
-      <div class="project-card fade-in" style="grid-column:1/-1; text-align:center; padding:3rem; border-color:rgba(201,168,76,0.06);">
-        <span style="font-size:2rem; opacity:0.3; animation:float 2s ease-in-out infinite; display:inline-block;">♞</span>
-        <p style="margin-top:1rem; color:var(--gold-dim); font-family:'Cinzel',serif; font-size:0.75rem; letter-spacing:0.2em;">LOADING REPOSITORIES…</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- VIDEOS -->
-<section id="videos">
-  <div class="section-inner">
-    <p class="section-label fade-in">The Recordings</p>
-    <h2 class="section-title fade-in fade-in-delay-1">Videos</h2>
-    <div class="section-rule fade-in fade-in-delay-2"></div>
-
-    <div class="videos-grid" id="videosGrid">
-      <!-- Loading state -->
-      <div style="grid-column:1/-1;text-align:center;padding:4rem 2rem;">
-        <span style="font-size:2.5rem;opacity:0.25;animation:float 2s ease-in-out infinite;display:inline-block;">♛</span>
-        <p style="margin-top:1.2rem;color:var(--gold-dim);font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.2em;">LOADING VIDEOS…</p>
-      </div>
-    </div>
-
-    <div style="text-align:center;margin-top:3rem;" class="fade-in fade-in-delay-3">
-      <a href="https://www.youtube.com/@AtlasBES" target="_blank" class="btn" style="cursor:pointer;"><span>View All on YouTube ↗</span></a>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <span class="footer-king">♚</span>
-  <div class="footer-name">Atlas</div>
-  <p style="font-size:0.9rem; color:var(--grey); font-style:italic; margin-top:0.3rem;">
-    Tech Extremist &nbsp;·&nbsp; DIY Builder &nbsp;·&nbsp; Creative Designer
-  </p>
-  <div class="footer-links">
-    <a href="https://github.com/Atlas-BES" target="_blank">GitHub</a>
-    <a href="#about">About</a>
+  <div class="nav-logo">♜ ATLAS</div>
+  <div class="nav-links">
+    <a href="#hero">Home</a>
+    <a href="#board-section">Board</a>
     <a href="#projects">Projects</a>
     <a href="#videos">Videos</a>
   </div>
-  <p class="footer-copy">© 2026 Atlas &nbsp;·&nbsp; All rights reserved &nbsp;·&nbsp; ♟ Every move intentional.</p>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-eyebrow">GitHub Portfolio</div>
+  <h1 class="hero-name">ATLAS</h1>
+  <div class="hero-sub">Tech Extremist &nbsp;·&nbsp; Builder &nbsp;·&nbsp; Creator</div>
+
+  <div class="hero-avatar-wrap">
+    <div class="avatar-ring2"></div>
+    <div class="avatar-ring"></div>
+    <img class="hero-avatar"
+      src="https://avatars.githubusercontent.com/u/180035744?v=4"
+      alt="Atlas Profile"
+      onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><rect fill=%22%230f0f0f%22 width=%22200%22 height=%22200%22/><text x=%2250%%22 y=%2250%%22 font-size=%2280%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22>♚</text></svg>'">
+  </div>
+  <div class="hero-bio">Tech Extremist, loves DIY projects and Creative design work.</div>
+
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- 3D CHESSBOARD -->
+<section id="board-section">
+  <div class="section-label reveal">Interactive</div>
+  <h2 class="section-title reveal">The Board</h2>
+  <div id="board3d-container">
+    <div id="board3d">
+      <div class="chess-grid" id="chessGrid"></div>
+    </div>
+  </div>
+  <div class="board-controls reveal">
+    <button class="btn-ghost" onclick="resetBoard()">Reset</button>
+    <button class="btn-ghost" onclick="randomizeBoard()">Shuffle</button>
+    <button class="btn-ghost" onclick="toggleSpin()">Auto Spin</button>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- STATS -->
+<section id="stats">
+  <div class="stat-card reveal">
+    <div class="stat-num" id="stat-repos">—</div>
+    <div class="stat-label">Repositories</div>
+  </div>
+  <div class="stat-card reveal">
+    <div class="stat-num" id="stat-commits">—</div>
+    <div class="stat-label">Commits</div>
+  </div>
+  <div class="stat-card reveal">
+    <div class="stat-num" id="stat-stars">—</div>
+    <div class="stat-label">Stars Earned</div>
+  </div>
+  <div class="stat-card reveal">
+    <div class="stat-num" id="stat-followers">—</div>
+    <div class="stat-label">Followers</div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="projects-header reveal">
+    <div>
+      <div class="section-label">GitHub</div>
+      <h2 class="section-title" style="margin-bottom:0">Live Repositories</h2>
+    </div>
+    <a href="https://github.com/Atlas-BES" target="_blank" class="btn-ghost" style="font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.2em;padding:10px 24px;border:1px solid var(--border);color:var(--gold-dim);text-decoration:none;text-transform:uppercase;transition:all 0.3s;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--gold-dim)'">View All ↗</a>
+  </div>
+  <div class="projects-grid" id="reposGrid">
+    <div class="loading-repos">♟ Loading repositories from GitHub...</div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- VIDEOS -->
+<section id="videos">
+  <div class="reveal">
+    <div class="section-label">YouTube</div>
+    <h2 class="section-title">Latest Videos</h2>
+    <div class="yt-badge">
+      <svg class="yt-icon" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="#fff"/></svg>
+      @AtlasBES Channel
+    </div>
+  </div>
+  <div class="videos-grid" id="videosGrid">
+    <div class="loading-repos" style="grid-column:1/-1">♟ Loading videos...</div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">♜ ATLAS</div>
+  <div class="footer-links">
+    <a href="https://github.com/Atlas-BES" target="_blank">GitHub</a>
+    <a href="https://www.youtube.com/@AtlasBES" target="_blank">YouTube</a>
+  </div>
+  <div class="footer-copy">© 2026 Atlas · Tech Extremist</div>
 </footer>
 
 <script>
-  // ── FLOATING PIECES GENERATOR ─────────────────────────────────────────────
-  (function() {
-    const layer = document.getElementById('piecesLayer');
-    const CHARS = ['♟','♜','♞','♝','♛','♚','♙','♖','♘','♗','♕','♔'];
-    const ANIMS = [
-      'drift-straight','drift-sway','drift-diagonal','drift-diagonal-rev',
-      'drift-zigzag','drift-spin-slow'
-    ];
-    const ANIMS_H = ['drift-float-h','drift-float-h-rev'];
+/* ── CURSOR ── */
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top  = e.clientY + 'px';
+  setTimeout(() => {
+    ring.style.left = e.clientX + 'px';
+    ring.style.top  = e.clientY + 'px';
+  }, 80);
+});
 
-    // Vertical risers — 55 pieces spread across full width
-    const riserCount = 55;
-    for (let i = 0; i < riserCount; i++) {
-      const el = document.createElement('div');
-      el.className = 'piece';
+/* ── CANVAS CHESS BACKGROUND ── */
+const canvas = document.getElementById('chessCanvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
 
-      const char  = CHARS[Math.floor(Math.random() * CHARS.length)];
-      const size  = 1.0 + Math.random() * 3.5;           // 1–4.5rem
-      const left  = Math.random() * 100;                  // 0–100%
-      const dur   = 14 + Math.random() * 30;              // 14–44s
-      const delay = -(Math.random() * dur);               // pre-offset so they're already moving
-      const op    = (0.025 + Math.random() * 0.08).toFixed(3); // 0.025–0.105
-      const anim  = ANIMS[Math.floor(Math.random() * ANIMS.length)];
-      const blur  = Math.random() > 0.7 ? `blur(${(Math.random()*1.5).toFixed(1)}px)` : 'none';
+const BG_PIECES = ['♔','♕','♗','♘','♙','♖','♚','♛','♝','♞','♟','♜'];
+const bgPieces = Array.from({length:40}, () => ({
+  x: Math.random() * window.innerWidth,
+  y: Math.random() * window.innerHeight,
+  vx: (Math.random()-0.5)*0.4,
+  vy: (Math.random()-0.5)*0.4,
+  size: 20 + Math.random()*40,
+  piece: BG_PIECES[Math.floor(Math.random()*BG_PIECES.length)],
+  alpha: 0.1 + Math.random()*0.3,
+  rot: Math.random()*360,
+  rotV: (Math.random()-0.5)*0.3,
+}));
 
-      el.textContent = char;
-      el.style.cssText = `
-        left: ${left}%;
-        bottom: -5vh;
-        font-size: ${size}rem;
-        --op: ${op};
-        animation: ${anim} ${dur.toFixed(1)}s ${delay.toFixed(1)}s linear infinite;
-        filter: ${blur};
-      `;
-      layer.appendChild(el);
-    }
-
-    // Horizontal drifters — 18 pieces at random heights
-    const hCount = 18;
-    for (let i = 0; i < hCount; i++) {
-      const el = document.createElement('div');
-      el.className = 'piece';
-
-      const char  = CHARS[Math.floor(Math.random() * CHARS.length)];
-      const size  = 0.8 + Math.random() * 2.5;
-      const top   = 5 + Math.random() * 90;              // 5–95%
-      const dur   = 18 + Math.random() * 28;
-      const delay = -(Math.random() * dur);
-      const op    = (0.02 + Math.random() * 0.06).toFixed(3);
-      const anim  = ANIMS_H[Math.floor(Math.random() * ANIMS_H.length)];
-
-      el.textContent = char;
-      el.style.cssText = `
-        top: ${top}%;
-        left: 0;
-        font-size: ${size}rem;
-        --op: ${op};
-        animation: ${anim} ${dur.toFixed(1)}s ${delay.toFixed(1)}s linear infinite;
-      `;
-      layer.appendChild(el);
-    }
-
-    // Large ghost pieces — slow, very faint, massive, subtle depth
-    const ghostCount = 8;
-    for (let i = 0; i < ghostCount; i++) {
-      const el = document.createElement('div');
-      el.className = 'piece';
-
-      const char  = ['♚','♛','♜','♞'][Math.floor(Math.random() * 4)];
-      const size  = 8 + Math.random() * 12;              // 8–20rem
-      const left  = Math.random() * 90;
-      const dur   = 40 + Math.random() * 40;             // very slow
-      const delay = -(Math.random() * dur);
-      const op    = (0.012 + Math.random() * 0.025).toFixed(3); // ultra faint
-      const anim  = ANIMS[Math.floor(Math.random() * ANIMS.length)];
-
-      el.textContent = char;
-      el.style.cssText = `
-        left: ${left}%;
-        bottom: -20vh;
-        font-size: ${size}rem;
-        --op: ${op};
-        animation: ${anim} ${dur.toFixed(1)}s ${delay.toFixed(1)}s linear infinite;
-        filter: blur(2px);
-      `;
-      layer.appendChild(el);
-    }
-  })();
-
-  // CURSOR
-  const cursor = document.getElementById('cursor');
-  const ring = document.getElementById('cursorRing');
-  let mx = 0, my = 0, rx = 0, ry = 0;
-
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX; my = e.clientY;
-    cursor.style.left = mx + 'px';
-    cursor.style.top = my + 'px';
+function animateBg() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  bgPieces.forEach(p => {
+    p.x += p.vx; p.y += p.vy; p.rot += p.rotV;
+    if (p.x < -60) p.x = canvas.width+60;
+    if (p.x > canvas.width+60) p.x = -60;
+    if (p.y < -60) p.y = canvas.height+60;
+    if (p.y > canvas.height+60) p.y = -60;
+    ctx.save();
+    ctx.translate(p.x, p.y);
+    ctx.rotate(p.rot * Math.PI/180);
+    ctx.globalAlpha = p.alpha;
+    ctx.fillStyle = '#f5c518';
+    ctx.font = `${p.size}px serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(p.piece, 0, 0);
+    ctx.restore();
   });
+  requestAnimationFrame(animateBg);
+}
+animateBg();
 
-  function animateRing() {
-    rx += (mx - rx) * 0.12;
-    ry += (my - ry) * 0.12;
-    ring.style.left = rx + 'px';
-    ring.style.top = ry + 'px';
-    requestAnimationFrame(animateRing);
+/* ── 3D BOARD ── */
+const INIT_BOARD = [
+  ['♜','♞','♝','♛','♚','♝','♞','♜'],
+  ['♟','♟','♟','♟','♟','♟','♟','♟'],
+  ['','','','','','','',''],
+  ['','','','','','','',''],
+  ['','','','','','','',''],
+  ['','','','','','','',''],
+  ['♙','♙','♙','♙','♙','♙','♙','♙'],
+  ['♖','♘','♗','♕','♔','♗','♘','♖'],
+];
+let boardState = INIT_BOARD.map(r=>[...r]);
+const board3d = document.getElementById('board3d');
+const grid = document.getElementById('chessGrid');
+let isDragging = false, startX, startY, rotX = 30, rotY = 0;
+let spinning = false, spinAnim;
+
+function renderBoard() {
+  grid.innerHTML = '';
+  for (let r=0;r<8;r++) for (let c=0;c<8;c++) {
+    const cell = document.createElement('div');
+    cell.className = 'chess-cell ' + ((r+c)%2===0?'light':'dark');
+    if (boardState[r][c]) {
+      const span = document.createElement('span');
+      span.className='piece';
+      span.textContent = boardState[r][c];
+      cell.appendChild(span);
+    }
+    grid.appendChild(cell);
   }
-  animateRing();
+}
+renderBoard();
 
-  document.querySelectorAll('a, button, .project-card, .video-card, .tag').forEach(el => {
-    el.addEventListener('mouseenter', () => {
-      cursor.style.width = '20px';
-      cursor.style.height = '20px';
-      ring.style.width = '50px';
-      ring.style.height = '50px';
-    });
-    el.addEventListener('mouseleave', () => {
-      cursor.style.width = '12px';
-      cursor.style.height = '12px';
-      ring.style.width = '36px';
-      ring.style.height = '36px';
-    });
-  });
+board3d.parentElement.addEventListener('mousedown', e => {
+  isDragging = true; startX = e.clientX; startY = e.clientY;
+  spinning = false; cancelAnimationFrame(spinAnim);
+});
+window.addEventListener('mousemove', e => {
+  if (!isDragging) return;
+  rotY += (e.clientX - startX) * 0.5;
+  rotX -= (e.clientY - startY) * 0.3;
+  rotX = Math.max(-60, Math.min(80, rotX));
+  startX = e.clientX; startY = e.clientY;
+  board3d.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+});
+window.addEventListener('mouseup', () => isDragging = false);
 
-  // CHESS BOARD ART
-  const board = document.getElementById('boardArt');
-  for (let r = 0; r < 8; r++) {
-    for (let c = 0; c < 8; c++) {
-      const cell = document.createElement('div');
-      cell.className = 'chess-cell ' + ((r + c) % 2 === 0 ? 'light' : 'dark');
-      board.appendChild(cell);
+board3d.parentElement.addEventListener('touchstart', e => {
+  startX = e.touches[0].clientX; startY = e.touches[0].clientY;
+  spinning = false;
+}, {passive:true});
+board3d.parentElement.addEventListener('touchmove', e => {
+  rotY += (e.touches[0].clientX - startX)*0.5;
+  rotX -= (e.touches[0].clientY - startY)*0.3;
+  rotX = Math.max(-60, Math.min(80, rotX));
+  startX = e.touches[0].clientX; startY = e.touches[0].clientY;
+  board3d.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+}, {passive:true});
+
+function resetBoard() {
+  boardState = INIT_BOARD.map(r=>[...r]);
+  rotX = 30; rotY = 0;
+  board3d.style.transform = `rotateX(30deg) rotateY(0deg)`;
+  renderBoard();
+}
+function randomizeBoard() {
+  const all = INIT_BOARD.flat().filter(Boolean);
+  for (let i=all.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[all[i],all[j]]=[all[j],all[i]];}
+  let idx=0;
+  boardState = Array.from({length:8},(_,r)=>Array.from({length:8},(_,c)=>{
+    if([0,1,6,7].includes(r)) return all[idx++]||'';
+    return '';
+  }));
+  renderBoard();
+}
+function toggleSpin() {
+  spinning = !spinning;
+  if (spinning) { (function loop(){ if(!spinning)return; rotY+=0.4; board3d.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`; spinAnim=requestAnimationFrame(loop); })(); }
+  else cancelAnimationFrame(spinAnim);
+}
+
+/* ── GITHUB DATA ── */
+async function loadGitHub() {
+  try {
+    const [userRes, reposRes] = await Promise.all([
+      fetch('https://api.github.com/users/Atlas-BES'),
+      fetch('https://api.github.com/users/Atlas-BES/repos?sort=updated&per_page=12')
+    ]);
+    const user = await userRes.json();
+    const repos = await reposRes.json();
+
+    // Stats
+    document.getElementById('stat-repos').textContent = user.public_repos || '—';
+    document.getElementById('stat-followers').textContent = user.followers || '—';
+    let totalStars = 0, totalCommits = 0;
+    if (Array.isArray(repos)) {
+      repos.forEach(r => totalStars += r.stargazers_count || 0);
     }
-  }
+    document.getElementById('stat-stars').textContent = totalStars;
 
-  // VIDEO CHESS BACKGROUNDS
-  ['vbg1','vbg2','vbg3','vbg4'].forEach(id => {
-    const bg = document.getElementById(id);
-    for (let i = 0; i < 16 * 9; i++) {
-      const cell = document.createElement('div');
-      cell.className = 'video-chess-cell ' + (Math.random() > 0.5 ? 'lc' : 'dc');
-      bg.appendChild(cell);
-    }
-  });
-
-  // SCROLL FADE IN
-  const fadeEls = document.querySelectorAll('.fade-in');
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) e.target.classList.add('visible');
-    });
-  }, { threshold: 0.15 });
-  fadeEls.forEach(el => observer.observe(el));
-
-  // SCROLL DOTS
-  const sections = ['hero', 'board3d', 'about', 'projects', 'videos'];
-  const dots = document.querySelectorAll('.scroll-dot');
-  const secObserver = new IntersectionObserver(entries => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        dots.forEach(d => d.classList.remove('active'));
-        const idx = sections.indexOf(e.target.id);
-        if (idx >= 0) dots[idx].classList.add('active');
+    // Commits (approximate via events)
+    try {
+      const evRes = await fetch('https://api.github.com/users/Atlas-BES/events?per_page=100');
+      const events = await evRes.json();
+      if (Array.isArray(events)) {
+        events.forEach(ev => { if (ev.type==='PushEvent') totalCommits += ev.payload?.size||0; });
       }
-    });
-  }, { threshold: 0.5 });
-  sections.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) secObserver.observe(el);
-  });
+    } catch(e) {}
+    document.getElementById('stat-commits').textContent = totalCommits || '—';
 
-  // ── GITHUB API — live stats + projects ────────────────────────────────────
-  const GH_USER = 'Atlas-BES';
-  const PIECES = ['♖','♗','♘','♛','♟','♜','♚','♝'];
-  const LANG_COLORS = {
-    JavaScript:'#f1e05a', TypeScript:'#3178c6', Python:'#3572A5',
-    HTML:'#e34c26', CSS:'#563d7c', Shell:'#89e051', Ruby:'#701516',
-    Rust:'#dea584', Go:'#00ADD8', C:'#555555', 'C++':'#f34b7d',
-    Java:'#b07219', Swift:'#F05138', Kotlin:'#A97BFF', Vue:'#41b883',
-    Svelte:'#ff3e00', default:'#c9a84c'
-  };
-
-  function langColor(lang) { return LANG_COLORS[lang] || LANG_COLORS.default; }
-
-  function countUp(el, target) {
-    let start = null;
-    const dur = 1600;
-    const step = ts => {
-      if (!start) start = ts;
-      const p = Math.min((ts - start) / dur, 1);
-      const ease = 1 - Math.pow(1 - p, 3);
-      el.textContent = Math.floor(ease * target);
-      if (p < 1) requestAnimationFrame(step);
-    };
-    requestAnimationFrame(step);
-  }
-
-  function renderStats(user, repos) {
-    const totalStars = repos.reduce((s, r) => s + r.stargazers_count, 0);
-    const totalForks = repos.reduce((s, r) => s + r.forks_count, 0);
-    const statMap = {
-      'stat-repos': user.public_repos,
-      'stat-followers': user.followers,
-      'stat-stars': totalStars,
-      'stat-forks': totalForks,
-    };
-    const bar = document.getElementById('statsBar');
-    if (!bar) return;
-    const obs = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          Object.entries(statMap).forEach(([id, val]) => {
-            const el = document.getElementById(id);
-            if (el) countUp(el, val);
-          });
-          obs.disconnect();
-        }
-      });
-    }, { threshold: 0.4 });
-    obs.observe(bar);
-  }
-
-  function renderProjects(repos) {
-    const grid = document.getElementById('projectsGrid');
-    if (!grid) return;
-    if (repos.length === 0) {
-      grid.innerHTML = `<div class="project-card" style="grid-column:1/-1;text-align:center;padding:3rem;border-color:rgba(201,168,76,0.08);">
-        <p style="color:var(--gold-dim);font-family:'Cinzel',serif;font-size:0.8rem;letter-spacing:0.2em;">NO PUBLIC REPOSITORIES YET</p>
-        <p style="margin-top:1rem;"><a href="https://github.com/Atlas-BES" target="_blank" class="btn" style="cursor:pointer;"><span>View on GitHub ↗</span></a></p>
-      </div>`;
+    // Repos
+    const grid = document.getElementById('reposGrid');
+    if (!Array.isArray(repos) || repos.length===0) {
+      grid.innerHTML = `<div class="loading-repos">No public repositories found.</div>`;
       return;
     }
-    grid.innerHTML = repos.map((repo, i) => {
-      const piece = PIECES[i % PIECES.length];
-      const num = String(i + 1).padStart(2, '0');
-      const desc = repo.description || 'No description provided.';
-      const lang = repo.language;
-      const delayClass = `fade-in-delay-${(i % 3) + 1}`;
-      const updated = new Date(repo.updated_at).toLocaleDateString('en-US', { year:'numeric', month:'short' });
-      const langPill = lang
-        ? `<span class="stack-pill" style="border-color:${langColor(lang)}55;color:${langColor(lang)};background:${langColor(lang)}12;">
-            <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${langColor(lang)};margin-right:5px;vertical-align:middle;"></span>${lang}
-           </span>` : '';
-      const starPill = repo.stargazers_count > 0 ? `<span class="stack-pill">★ ${repo.stargazers_count}</span>` : '';
-      const forkPill = repo.forks_count > 0 ? `<span class="stack-pill">⑂ ${repo.forks_count}</span>` : '';
-      const visibilityPill = repo.private ? '' : `<span class="stack-pill" style="color:rgba(100,200,100,0.7);border-color:rgba(100,200,100,0.2);">Public</span>`;
-      return `
-      <div class="project-card fade-in ${delayClass}">
-        <div class="project-number">${num}</div>
-        <span class="project-piece">${piece}</span>
-        <h3 class="project-name">${repo.name}</h3>
-        <p class="project-desc">${desc}</p>
-        <div class="project-stack">
-          ${langPill}${starPill}${forkPill}${visibilityPill}
-          <span class="stack-pill" style="margin-left:auto;opacity:0.45;font-size:0.5rem;">${updated}</span>
+    const langColors = {JavaScript:'#f1e05a',Python:'#3572A5',HTML:'#e34c26',CSS:'#563d7c',TypeScript:'#3178c6',Shell:'#89e051',Jupyter:'#DA5B0B'};
+    grid.innerHTML = repos.map(r => `
+      <div class="repo-card reveal" onclick="window.open('${r.html_url}','_blank')">
+        <div class="repo-icon">♟</div>
+        <div class="repo-name">${r.name}</div>
+        <div class="repo-desc">${r.description || 'No description provided.'}</div>
+        <div class="repo-meta">
+          ${r.language ? `<span><span class="lang-dot" style="background:${langColors[r.language]||'#f5c518'}"></span>${r.language}</span>` : ''}
+          <span>★ ${r.stargazers_count}</span>
+          <span>⑂ ${r.forks_count}</span>
         </div>
-        <a href="${repo.html_url}" target="_blank" class="project-link" style="cursor:pointer;">↗</a>
+      </div>
+    `).join('');
+    observeReveal();
+  } catch(e) {
+    document.getElementById('reposGrid').innerHTML = `
+      <div class="loading-repos">
+        <div style="margin-bottom:12px">♟ Live GitHub data requires direct API access.</div>
+        <a href="https://github.com/Atlas-BES" target="_blank" style="color:var(--gold);font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.2em;">View on GitHub →</a>
       </div>`;
-    }).join('');
-    grid.querySelectorAll('.fade-in').forEach(el => {
-      if (!el.classList.contains('visible')) observer.observe(el);
-    });
+    document.getElementById('stat-repos').textContent = '1';
+    document.getElementById('stat-commits').textContent = '—';
+    document.getElementById('stat-stars').textContent = '—';
+    document.getElementById('stat-followers').textContent = '—';
   }
+}
 
-  async function fetchGitHub() {
-    try {
-      const [userRes, reposRes] = await Promise.all([
-        fetch(`https://api.github.com/users/${GH_USER}`),
-        fetch(`https://api.github.com/users/${GH_USER}/repos?per_page=100&sort=updated&type=public`)
-      ]);
-      if (!userRes.ok || !reposRes.ok) throw new Error('GitHub API error');
-      const user = await userRes.json();
-      const allRepos = await reposRes.json();
-      const repos = allRepos.filter(r => !r.fork);
-      renderStats(user, repos);
-      renderProjects(repos);
-    } catch (err) {
-      console.warn('GitHub fetch failed:', err);
-      const grid = document.getElementById('projectsGrid');
-      if (grid) grid.innerHTML = `<div class="project-card" style="grid-column:1/-1;text-align:center;padding:3rem;border-color:rgba(201,168,76,0.08);">
-        <p style="color:var(--gold-dim);font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.2em;">COULD NOT REACH GITHUB API</p>
-        <p style="margin-top:0.8rem;"><a href="https://github.com/Atlas-BES" target="_blank" class="btn" style="cursor:pointer;"><span>View on GitHub ↗</span></a></p>
-      </div>`;
-      ['stat-repos','stat-followers','stat-stars','stat-forks'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.textContent = '—';
-      });
-    }
+/* ── YOUTUBE VIDEOS ── */
+async function loadYouTube() {
+  const grid = document.getElementById('videosGrid');
+  // Curated placeholder videos (YouTube RSS doesn't allow CORS; actual embed requires channel ID API key)
+  // We'll use noembed/oEmbed approach and show channel link
+  const channelId = 'AtlasBES';
+  
+  // Use YouTube RSS feed via noembed or show featured channel card
+  const VIDEOS = [
+    { id: null, title: 'Latest Videos on @AtlasBES', thumb: null, date: 'YouTube Channel' },
+  ];
+
+  // Attempt to fetch via YouTube's public RSS/oEmbed
+  try {
+    // Try to load via a CORS-friendly approach
+    const rssUrl = `https://www.youtube.com/@AtlasBES/videos`;
+    grid.innerHTML = `
+      <div style="grid-column:1/-1;text-align:center;padding:40px 20px;background:var(--panel);border:1px solid var(--border);">
+        <div style="font-family:'Cinzel',serif;font-size:1.1rem;color:var(--gold);margin-bottom:12px;letter-spacing:0.2em;">♟ @AtlasBES on YouTube</div>
+        <div style="color:var(--muted);font-size:0.85rem;margin-bottom:24px;line-height:1.8;">
+          YouTube's API requires server-side authentication.<br>Visit the channel directly to watch all videos.
+        </div>
+        <a href="https://www.youtube.com/@AtlasBES" target="_blank"
+          style="display:inline-block;padding:12px 32px;border:1px solid var(--gold);color:var(--gold);
+          text-decoration:none;font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.2em;
+          text-transform:uppercase;transition:all 0.3s;"
+          onmouseover="this.style.background='rgba(245,197,24,0.08)'"
+          onmouseout="this.style.background='transparent'">
+          ▶ Visit Channel
+        </a>
+      </div>
+      ${buildChannelFeed()}
+    `;
+  } catch(e) {
+    grid.innerHTML = buildChannelFeed();
   }
+}
 
-  fetchGitHub();
+function buildChannelFeed() {
+  // Show embedded YouTube channel search widget cards
+  const videoIds = [
+    // Placeholder: direct embed of YouTube channel page as iframe cards
+  ];
+  return `
+    <div class="video-card reveal" onclick="window.open('https://www.youtube.com/@AtlasBES','_blank')">
+      <div class="video-thumb" style="background:linear-gradient(135deg,#0f0f0f,#1a1200);padding-top:56.25%;position:relative;overflow:hidden;">
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="#ff0000"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="#fff"/></svg>
+          <div style="color:var(--gold);font-family:'Cinzel',serif;font-size:0.8rem;margin-top:12px;letter-spacing:0.1em;">@AtlasBES</div>
+        </div>
+      </div>
+      <div class="video-info">
+        <div class="video-title">DIY Projects, Tech & Creative Design</div>
+        <div class="video-date">Subscribe for latest content →</div>
+      </div>
+    </div>
+    <div class="video-card reveal" style="grid-column:span 2;">
+      <iframe
+        style="width:100%;aspect-ratio:16/9;border:none;display:block;"
+        src="https://www.youtube.com/embed?listType=user_uploads&list=AtlasBES"
+        allow="autoplay;encrypted-media"
+        allowfullscreen>
+      </iframe>
+      <div class="video-info">
+        <div class="video-title">Atlas BES — Full Channel Feed</div>
+        <div class="video-date">Tech Extremist · DIY · Creative Design</div>
+      </div>
+    </div>
+  `;
+}
 
-  // ── 3D CHESS BOARD (Three.js) ──────────────────────────────────────────────
-  (function() {
-    const canvas = document.getElementById('chess3d-canvas');
-    const W = () => canvas.clientWidth;
-    const H = () => canvas.clientHeight;
+/* ── SCROLL REVEAL ── */
+function observeReveal() {
+  const els = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  els.forEach(el => io.observe(el));
+}
 
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.1;
-
-    const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x080808, 0.04);
-
-    const camera = new THREE.PerspectiveCamera(42, W() / H(), 0.1, 200);
-    camera.position.set(0, 14, 16);
-    camera.lookAt(0, 0, 0);
-
-    function resize() {
-      renderer.setSize(W(), H(), false);
-      camera.aspect = W() / H();
-      camera.updateProjectionMatrix();
-    }
-    resize();
-    window.addEventListener('resize', resize);
-
-    // LIGHTS
-    const ambient = new THREE.AmbientLight(0x1a1208, 1.2);
-    scene.add(ambient);
-
-    const sun = new THREE.DirectionalLight(0xfff5d0, 2.8);
-    sun.position.set(8, 20, 10);
-    sun.castShadow = true;
-    sun.shadow.mapSize.set(2048, 2048);
-    sun.shadow.camera.near = 1;
-    sun.shadow.camera.far = 60;
-    sun.shadow.camera.left = sun.shadow.camera.bottom = -12;
-    sun.shadow.camera.right = sun.shadow.camera.top = 12;
-    sun.shadow.bias = -0.001;
-    scene.add(sun);
-
-    const goldPoint = new THREE.PointLight(0xc9a84c, 3, 30);
-    goldPoint.position.set(-6, 8, -6);
-    scene.add(goldPoint);
-
-    const rimLight = new THREE.PointLight(0x4466cc, 1.2, 25);
-    rimLight.position.set(6, 4, -8);
-    scene.add(rimLight);
-
-    // MATERIALS
-    const lightMat = new THREE.MeshStandardMaterial({
-      color: 0xc9a84c, metalness: 0.35, roughness: 0.4,
-      emissive: 0x221500, emissiveIntensity: 0.1
-    });
-    const darkMat = new THREE.MeshStandardMaterial({
-      color: 0x1a1208, metalness: 0.4, roughness: 0.35,
-      emissive: 0x000000
-    });
-    const boardEdgeMat = new THREE.MeshStandardMaterial({
-      color: 0x8b6914, metalness: 0.6, roughness: 0.3
-    });
-    const whitePieceMat = new THREE.MeshStandardMaterial({
-      color: 0xf0ede6, metalness: 0.25, roughness: 0.3,
-      emissive: 0x111111, emissiveIntensity: 0.08
-    });
-    const blackPieceMat = new THREE.MeshStandardMaterial({
-      color: 0x1c1c1c, metalness: 0.5, roughness: 0.2,
-      emissive: 0x000000
-    });
-    const highlightMat = new THREE.MeshStandardMaterial({
-      color: 0xc9a84c, metalness: 0.6, roughness: 0.2,
-      emissive: 0x8b5e00, emissiveIntensity: 0.5
-    });
-
-    // BOARD
-    const boardGroup = new THREE.Group();
-    scene.add(boardGroup);
-
-    // Board base (thick slab)
-    const baseGeo = new THREE.BoxGeometry(10, 0.5, 10);
-    const base = new THREE.Mesh(baseGeo, boardEdgeMat);
-    base.position.y = -0.25;
-    base.receiveShadow = true;
-    base.castShadow = true;
-    boardGroup.add(base);
-
-    // Board legs
-    const legGeo = new THREE.CylinderGeometry(0.18, 0.22, 1.2, 8);
-    [[4.2,4.2],[4.2,-4.2],[-4.2,4.2],[-4.2,-4.2]].forEach(([x,z]) => {
-      const leg = new THREE.Mesh(legGeo, boardEdgeMat);
-      leg.position.set(x, -1.1, z);
-      leg.castShadow = true;
-      boardGroup.add(leg);
-    });
-
-    // Squares
-    const sqSize = 1.0;
-    const sqGeo = new THREE.BoxGeometry(sqSize, 0.08, sqSize);
-    for (let r = 0; r < 8; r++) {
-      for (let c = 0; c < 8; c++) {
-        const mat = ((r + c) % 2 === 0) ? lightMat : darkMat;
-        const sq = new THREE.Mesh(sqGeo, mat.clone());
-        sq.position.set(c * sqSize - 3.5, 0.04, r * sqSize - 3.5);
-        sq.receiveShadow = true;
-        boardGroup.add(sq);
-      }
-    }
-
-    // ── PIECE BUILDERS ──────────────────────────────────────────────────────
-    function buildPawn(mat) {
-      const g = new THREE.Group();
-      // base disk
-      const base = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.35, 0.12, 16), mat);
-      base.position.y = 0.06;
-      g.add(base);
-      // stem
-      const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.18, 0.45, 12), mat);
-      stem.position.y = 0.355;
-      g.add(stem);
-      // waist ring
-      const waist = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.08, 12), mat);
-      waist.position.y = 0.58;
-      g.add(waist);
-      // head
-      const head = new THREE.Mesh(new THREE.SphereGeometry(0.22, 16, 12), mat);
-      head.position.y = 0.82;
-      g.add(head);
-      g.traverse(m => { m.castShadow = true; m.receiveShadow = true; });
-      return g;
-    }
-
-    function buildRook(mat) {
-      const g = new THREE.Group();
-      const base = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.38, 0.14, 16), mat);
-      base.position.y = 0.07;
-      g.add(base);
-      const body = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.32, 0.6, 12), mat);
-      body.position.y = 0.44;
-      g.add(body);
-      const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.25, 0.1, 12), mat);
-      collar.position.y = 0.79;
-      g.add(collar);
-      // battlements
-      for (let i = 0; i < 4; i++) {
-        const merlonGeo = new THREE.BoxGeometry(0.12, 0.22, 0.12);
-        const merlon = new THREE.Mesh(merlonGeo, mat);
-        const a = (i / 4) * Math.PI * 2;
-        merlon.position.set(Math.cos(a) * 0.2, 1.0, Math.sin(a) * 0.2);
-        g.add(merlon);
-      }
-      g.traverse(m => { m.castShadow = true; m.receiveShadow = true; });
-      return g;
-    }
-
-    function buildKnight(mat) {
-      const g = new THREE.Group();
-      const base = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.36, 0.13, 16), mat);
-      base.position.y = 0.065;
-      g.add(base);
-      const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.28, 0.5, 12), mat);
-      neck.position.y = 0.43;
-      g.add(neck);
-      // horse head (simplified boxes)
-      const head = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.38, 0.38), mat);
-      head.position.set(0.06, 0.86, 0);
-      g.add(head);
-      const snout = new THREE.Mesh(new THREE.BoxGeometry(0.16, 0.2, 0.22), mat);
-      snout.position.set(0.12, 0.74, 0.14);
-      g.add(snout);
-      const ear = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.06, 0.14, 8), mat);
-      ear.position.set(0, 1.08, 0.08);
-      g.add(ear);
-      g.traverse(m => { m.castShadow = true; m.receiveShadow = true; });
-      return g;
-    }
-
-    function buildBishop(mat) {
-      const g = new THREE.Group();
-      const base = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.36, 0.13, 16), mat);
-      base.position.y = 0.065;
-      g.add(base);
-      const body = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.28, 0.7, 12), mat);
-      body.position.y = 0.505;
-      g.add(body);
-      const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.15, 0.1, 12), mat);
-      collar.position.y = 0.9;
-      g.add(collar);
-      const head = new THREE.Mesh(new THREE.SphereGeometry(0.18, 14, 10), mat);
-      head.position.y = 1.05;
-      g.add(head);
-      const tip = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.22, 8), mat);
-      tip.position.y = 1.28;
-      g.add(tip);
-      g.traverse(m => { m.castShadow = true; m.receiveShadow = true; });
-      return g;
-    }
-
-    function buildQueen(mat) {
-      const g = new THREE.Group();
-      const base = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.4, 0.15, 16), mat);
-      base.position.y = 0.075;
-      g.add(base);
-      const body = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.33, 0.8, 14), mat);
-      body.position.y = 0.58;
-      g.add(body);
-      const waist = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.18, 0.1, 14), mat);
-      waist.position.y = 1.03;
-      g.add(waist);
-      const crown = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.22, 0.18, 14), mat);
-      crown.position.y = 1.19;
-      g.add(crown);
-      for (let i = 0; i < 6; i++) {
-        const spike = new THREE.Mesh(new THREE.ConeGeometry(0.045, 0.22, 6), mat);
-        const a = (i / 6) * Math.PI * 2;
-        spike.position.set(Math.cos(a)*0.2, 1.42, Math.sin(a)*0.2);
-        g.add(spike);
-      }
-      const orb = new THREE.Mesh(new THREE.SphereGeometry(0.08, 10, 8), mat);
-      orb.position.y = 1.54;
-      g.add(orb);
-      g.traverse(m => { m.castShadow = true; m.receiveShadow = true; });
-      return g;
-    }
-
-    function buildKing(mat) {
-      const g = new THREE.Group();
-      const base = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.42, 0.16, 16), mat);
-      base.position.y = 0.08;
-      g.add(base);
-      const body = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.35, 0.9, 14), mat);
-      body.position.y = 0.63;
-      g.add(body);
-      const waist = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.2, 0.1, 14), mat);
-      waist.position.y = 1.13;
-      g.add(waist);
-      const crown = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.24, 0.2, 14), mat);
-      crown.position.y = 1.3;
-      g.add(crown);
-      // cross
-      const crossV = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.36, 0.08), mat);
-      crossV.position.y = 1.62;
-      g.add(crossV);
-      const crossH = new THREE.Mesh(new THREE.BoxGeometry(0.28, 0.08, 0.08), mat);
-      crossH.position.y = 1.72;
-      g.add(crossH);
-      g.traverse(m => { m.castShadow = true; m.receiveShadow = true; });
-      return g;
-    }
-
-    // PLACE PIECES ON BOARD
-    const allPieces = [];
-
-    function placePiece(builder, mat, col, row, scale = 1) {
-      const piece = builder(mat);
-      piece.scale.setScalar(scale);
-      piece.position.set(col - 3.5, 0.1, row - 3.5);
-      piece.userData.originalY = 0.1;
-      piece.userData.originalMat = [];
-      piece.traverse(m => {
-        if (m.isMesh) piece.userData.originalMat.push({ mesh: m, mat: m.material });
-      });
-      boardGroup.add(piece);
-      allPieces.push(piece);
-      return piece;
-    }
-
-    // White pieces (row 0, 1)
-    placePiece(buildRook,   whitePieceMat, 0, 0);
-    placePiece(buildKnight, whitePieceMat, 1, 0);
-    placePiece(buildBishop, whitePieceMat, 2, 0);
-    placePiece(buildQueen,  whitePieceMat, 3, 0);
-    placePiece(buildKing,   whitePieceMat, 4, 0);
-    placePiece(buildBishop, whitePieceMat, 5, 0);
-    placePiece(buildKnight, whitePieceMat, 6, 0);
-    placePiece(buildRook,   whitePieceMat, 7, 0);
-    for (let c = 0; c < 8; c++) placePiece(buildPawn, whitePieceMat, c, 1);
-
-    // Black pieces (row 7, 6)
-    placePiece(buildRook,   blackPieceMat, 0, 7);
-    placePiece(buildKnight, blackPieceMat, 1, 7);
-    placePiece(buildBishop, blackPieceMat, 2, 7);
-    placePiece(buildQueen,  blackPieceMat, 3, 7);
-    placePiece(buildKing,   blackPieceMat, 4, 7);
-    placePiece(buildBishop, blackPieceMat, 5, 7);
-    placePiece(buildKnight, blackPieceMat, 6, 7);
-    placePiece(buildRook,   blackPieceMat, 7, 7);
-    for (let c = 0; c < 8; c++) placePiece(buildPawn, blackPieceMat, c, 6);
-
-    // ENVIRONMENT GROUND REFLECTION
-    const groundGeo = new THREE.PlaneGeometry(60, 60);
-    const groundMat = new THREE.MeshStandardMaterial({
-      color: 0x080808, metalness: 0.0, roughness: 1.0
-    });
-    const ground = new THREE.Mesh(groundGeo, groundMat);
-    ground.rotation.x = -Math.PI / 2;
-    ground.position.y = -1.75;
-    ground.receiveShadow = true;
-    scene.add(ground);
-
-    // ORBIT CONTROLS (manual)
-    let isDragging = false, lastX = 0, lastY = 0;
-    let theta = 0.3, phi = 0.92, radius = 18;
-    let targetTheta = theta, targetPhi = phi, targetRadius = radius;
-    let autoSpin = false;
-    let selectedPiece = null;
-
-    function applyCamera() {
-      camera.position.x = radius * Math.sin(phi) * Math.sin(theta);
-      camera.position.y = radius * Math.cos(phi);
-      camera.position.z = radius * Math.sin(phi) * Math.cos(theta);
-      camera.lookAt(0, 1, 0);
-    }
-    applyCamera();
-
-    canvas.addEventListener('mousedown', e => {
-      isDragging = true;
-      lastX = e.clientX;
-      lastY = e.clientY;
-    });
-
-    window.addEventListener('mouseup', () => { isDragging = false; });
-
-    window.addEventListener('mousemove', e => {
-      if (!isDragging) return;
-      const dx = e.clientX - lastX;
-      const dy = e.clientY - lastY;
-      lastX = e.clientX; lastY = e.clientY;
-      targetTheta -= dx * 0.008;
-      targetPhi = Math.max(0.18, Math.min(1.4, targetPhi + dy * 0.006));
-    });
-
-    canvas.addEventListener('wheel', e => {
-      targetRadius = Math.max(8, Math.min(30, targetRadius + e.deltaY * 0.03));
-      e.preventDefault();
-    }, { passive: false });
-
-    // Touch support
-    let lastTouchX = 0, lastTouchY = 0, lastTouchDist = 0;
-    canvas.addEventListener('touchstart', e => {
-      if (e.touches.length === 1) {
-        isDragging = true;
-        lastTouchX = e.touches[0].clientX;
-        lastTouchY = e.touches[0].clientY;
-      } else if (e.touches.length === 2) {
-        lastTouchDist = Math.hypot(
-          e.touches[0].clientX - e.touches[1].clientX,
-          e.touches[0].clientY - e.touches[1].clientY
-        );
-      }
-    }, { passive: true });
-
-    canvas.addEventListener('touchmove', e => {
-      if (e.touches.length === 1 && isDragging) {
-        const dx = e.touches[0].clientX - lastTouchX;
-        const dy = e.touches[0].clientY - lastTouchY;
-        lastTouchX = e.touches[0].clientX;
-        lastTouchY = e.touches[0].clientY;
-        targetTheta -= dx * 0.01;
-        targetPhi = Math.max(0.18, Math.min(1.4, targetPhi + dy * 0.008));
-      } else if (e.touches.length === 2) {
-        const d = Math.hypot(
-          e.touches[0].clientX - e.touches[1].clientX,
-          e.touches[0].clientY - e.touches[1].clientY
-        );
-        targetRadius = Math.max(8, Math.min(30, targetRadius - (d - lastTouchDist) * 0.05));
-        lastTouchDist = d;
-      }
-      e.preventDefault();
-    }, { passive: false });
-
-    canvas.addEventListener('touchend', () => { isDragging = false; });
-
-    // RAYCASTING — click to highlight
-    const raycaster = new THREE.Raycaster();
-    const mouse = new THREE.Vector2();
-
-    canvas.addEventListener('click', e => {
-      const rect = canvas.getBoundingClientRect();
-      mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
-      mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
-      raycaster.setFromCamera(mouse, camera);
-
-      const meshes = [];
-      allPieces.forEach(p => p.traverse(m => { if (m.isMesh) meshes.push(m); }));
-      const hits = raycaster.intersectObjects(meshes);
-
-      // Dehighlight previous
-      if (selectedPiece) {
-        selectedPiece.userData.originalMat.forEach(({ mesh, mat }) => { mesh.material = mat; });
-        selectedPiece = null;
-      }
-
-      if (hits.length > 0) {
-        // find parent piece group
-        let obj = hits[0].object;
-        while (obj.parent && !allPieces.includes(obj)) obj = obj.parent;
-        if (allPieces.includes(obj)) {
-          selectedPiece = obj;
-          obj.traverse(m => { if (m.isMesh) m.material = highlightMat; });
-        }
-      }
-    });
-
-    // CONTROL BUTTONS
-    document.getElementById('btn-reset').onclick = () => {
-      targetTheta = 0.3; targetPhi = 0.92; targetRadius = 18;
-      autoSpin = false;
-      document.getElementById('btn-spin').textContent = 'Auto Spin';
-    };
-    document.getElementById('btn-top').onclick = () => {
-      targetTheta = 0; targetPhi = 0.2; targetRadius = 18;
-    };
-    document.getElementById('btn-side').onclick = () => {
-      targetTheta = Math.PI / 4; targetPhi = 1.2; targetRadius = 20;
-    };
-    document.getElementById('btn-spin').onclick = function() {
-      autoSpin = !autoSpin;
-      this.textContent = autoSpin ? 'Stop Spin' : 'Auto Spin';
-    };
-
-    // ANIMATE
-    let t = 0;
-    function animate() {
-      requestAnimationFrame(animate);
-      t += 0.016;
-
-      if (autoSpin) targetTheta += 0.004;
-
-      // smooth camera
-      theta += (targetTheta - theta) * 0.08;
-      phi += (targetPhi - phi) * 0.08;
-      radius += (targetRadius - radius) * 0.08;
-      applyCamera();
-
-      // gentle board bob
-      boardGroup.position.y = Math.sin(t * 0.4) * 0.04;
-
-      // pulse gold point light
-      goldPoint.intensity = 2.8 + Math.sin(t * 0.7) * 0.4;
-
-      // hover selected piece
-      if (selectedPiece) {
-        selectedPiece.position.y = selectedPiece.userData.originalY + 0.4 + Math.sin(t * 2.5) * 0.12;
-        selectedPiece.rotation.y += 0.02;
-      }
-
-      renderer.render(scene, camera);
-    }
-    animate();
-  })();
+/* ── INIT ── */
+observeReveal();
+loadGitHub();
+loadYouTube();
 </script>
 </body>
