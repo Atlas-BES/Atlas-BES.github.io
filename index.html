@@ -52,7 +52,7 @@ body {
 #chessCanvas {
   position: fixed; top:0; left:0;
   width:100%; height:100%;
-  z-index: 0; opacity: 0.18;
+  z-index: 0; opacity: 0.22;
   pointer-events: none;
 }
 
@@ -186,41 +186,21 @@ nav {
   margin-bottom: 48px;
 }
 #board3d-container {
-  perspective: 900px;
-  width: min(540px, 90vw);
-  height: min(540px, 90vw);
+  width: min(600px, 92vw);
+  height: min(600px, 92vw);
   cursor: grab;
   user-select: none;
+  position: relative;
+  border-radius: 4px;
+  box-shadow: 0 0 80px rgba(245,197,24,0.15), 0 40px 100px rgba(0,0,0,0.9);
 }
 #board3d-container:active { cursor: grabbing; }
-#board3d {
-  width: 100%; height: 100%;
-  transform-style: preserve-3d;
-  transform: rotateX(30deg) rotateY(0deg);
-  transition: transform 0.05s linear;
-  position: relative;
+#threeCanvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+  border-radius: 4px;
 }
-.chess-grid {
-  display: grid;
-  grid-template-columns: repeat(8,1fr);
-  grid-template-rows: repeat(8,1fr);
-  width: 100%; height: 100%;
-  border: 2px solid rgba(245,197,24,0.4);
-  box-shadow: 0 0 60px rgba(245,197,24,0.2), 0 40px 80px rgba(0,0,0,0.8);
-  transform-style: preserve-3d;
-}
-.chess-cell {
-  display: flex; align-items: center; justify-content: center;
-  font-size: clamp(1rem, 2.5vw, 1.8rem);
-  transition: background 0.3s;
-  cursor: pointer;
-}
-.chess-cell.light { background: #1a1510; }
-.chess-cell.dark  { background: #0a0906; }
-.chess-cell.light:hover { background: rgba(245,197,24,0.12); }
-.chess-cell.dark:hover  { background: rgba(245,197,24,0.06); }
-.chess-cell .piece { filter: drop-shadow(0 0 6px rgba(245,197,24,0.8)); transition: transform 0.2s; }
-.chess-cell:hover .piece { transform: scale(1.2) translateY(-3px); }
 .board-controls {
   display: flex; gap: 16px; margin-top: 24px;
 }
@@ -498,9 +478,7 @@ footer {
   <div class="section-label reveal">Interactive</div>
   <h2 class="section-title reveal">The Board</h2>
   <div id="board3d-container">
-    <div id="board3d">
-      <div class="chess-grid" id="chessGrid"></div>
-    </div>
+    <canvas id="threeCanvas"></canvas>
   </div>
   <div class="board-controls reveal">
     <button class="btn-ghost" onclick="resetBoard()">Reset</button>
@@ -573,6 +551,7 @@ footer {
   <div class="footer-copy">© 2026 Atlas · Tech Extremist</div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 /* ── CURSOR ── */
 const cursor = document.getElementById('cursor');
@@ -586,129 +565,397 @@ document.addEventListener('mousemove', e => {
   }, 80);
 });
 
-/* ── CANVAS CHESS BACKGROUND ── */
-const canvas = document.getElementById('chessCanvas');
-const ctx = canvas.getContext('2d');
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+/* ── CANVAS CHESS BACKGROUND (200 pieces) ── */
+const bgCanvas = document.getElementById('chessCanvas');
+const bgCtx = bgCanvas.getContext('2d');
+function resizeBg() { bgCanvas.width = window.innerWidth; bgCanvas.height = window.innerHeight; }
+resizeBg();
+window.addEventListener('resize', resizeBg);
 
 const BG_PIECES = ['♔','♕','♗','♘','♙','♖','♚','♛','♝','♞','♟','♜'];
-const bgPieces = Array.from({length:40}, () => ({
-  x: Math.random() * window.innerWidth,
-  y: Math.random() * window.innerHeight,
-  vx: (Math.random()-0.5)*0.4,
-  vy: (Math.random()-0.5)*0.4,
-  size: 20 + Math.random()*40,
-  piece: BG_PIECES[Math.floor(Math.random()*BG_PIECES.length)],
-  alpha: 0.1 + Math.random()*0.3,
-  rot: Math.random()*360,
-  rotV: (Math.random()-0.5)*0.3,
+const bgPieces = Array.from({length: 200}, () => ({
+  x:    Math.random() * window.innerWidth,
+  y:    Math.random() * window.innerHeight,
+  vx:   (Math.random() - 0.5) * 0.55,
+  vy:   (Math.random() - 0.5) * 0.55,
+  size: 14 + Math.random() * 52,
+  piece: BG_PIECES[Math.floor(Math.random() * BG_PIECES.length)],
+  alpha: 0.06 + Math.random() * 0.38,
+  rot:  Math.random() * 360,
+  rotV: (Math.random() - 0.5) * 0.5,
+  pulse: Math.random() * Math.PI * 2,
+  pulseSpeed: 0.005 + Math.random() * 0.015,
 }));
 
 function animateBg() {
-  ctx.clearRect(0,0,canvas.width,canvas.height);
+  bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
   bgPieces.forEach(p => {
-    p.x += p.vx; p.y += p.vy; p.rot += p.rotV;
-    if (p.x < -60) p.x = canvas.width+60;
-    if (p.x > canvas.width+60) p.x = -60;
-    if (p.y < -60) p.y = canvas.height+60;
-    if (p.y > canvas.height+60) p.y = -60;
-    ctx.save();
-    ctx.translate(p.x, p.y);
-    ctx.rotate(p.rot * Math.PI/180);
-    ctx.globalAlpha = p.alpha;
-    ctx.fillStyle = '#f5c518';
-    ctx.font = `${p.size}px serif`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillText(p.piece, 0, 0);
-    ctx.restore();
+    p.x += p.vx; p.y += p.vy; p.rot += p.rotV; p.pulse += p.pulseSpeed;
+    if (p.x < -80) p.x = bgCanvas.width + 80;
+    if (p.x > bgCanvas.width + 80)  p.x = -80;
+    if (p.y < -80) p.y = bgCanvas.height + 80;
+    if (p.y > bgCanvas.height + 80) p.y = -80;
+    const a = p.alpha * (0.7 + 0.3 * Math.sin(p.pulse));
+    bgCtx.save();
+    bgCtx.translate(p.x, p.y);
+    bgCtx.rotate(p.rot * Math.PI / 180);
+    bgCtx.globalAlpha = a;
+    bgCtx.fillStyle = '#f5c518';
+    bgCtx.shadowColor = 'rgba(245,197,24,0.6)';
+    bgCtx.shadowBlur = p.size * 0.4;
+    bgCtx.font = `${p.size}px serif`;
+    bgCtx.textAlign = 'center';
+    bgCtx.textBaseline = 'middle';
+    bgCtx.fillText(p.piece, 0, 0);
+    bgCtx.restore();
   });
   requestAnimationFrame(animateBg);
 }
 animateBg();
 
-/* ── 3D BOARD ── */
-const INIT_BOARD = [
-  ['♜','♞','♝','♛','♚','♝','♞','♜'],
-  ['♟','♟','♟','♟','♟','♟','♟','♟'],
-  ['','','','','','','',''],
-  ['','','','','','','',''],
-  ['','','','','','','',''],
-  ['','','','','','','',''],
-  ['♙','♙','♙','♙','♙','♙','♙','♙'],
-  ['♖','♘','♗','♕','♔','♗','♘','♖'],
-];
-let boardState = INIT_BOARD.map(r=>[...r]);
-const board3d = document.getElementById('board3d');
-const grid = document.getElementById('chessGrid');
-let isDragging = false, startX, startY, rotX = 30, rotY = 0;
-let spinning = false, spinAnim;
+/* ══════════════════════════════════════════════════
+   THREE.JS 3D CHESS BOARD
+══════════════════════════════════════════════════ */
+const container = document.getElementById('board3d-container');
+const threeCanvas = document.getElementById('threeCanvas');
 
-function renderBoard() {
-  grid.innerHTML = '';
-  for (let r=0;r<8;r++) for (let c=0;c<8;c++) {
-    const cell = document.createElement('div');
-    cell.className = 'chess-cell ' + ((r+c)%2===0?'light':'dark');
-    if (boardState[r][c]) {
-      const span = document.createElement('span');
-      span.className='piece';
-      span.textContent = boardState[r][c];
-      cell.appendChild(span);
-    }
-    grid.appendChild(cell);
+const renderer = new THREE.WebGLRenderer({ canvas: threeCanvas, antialias: true, alpha: true });
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setSize(container.clientWidth, container.clientHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+const scene = new THREE.Scene();
+const W = container.clientWidth, H = container.clientHeight;
+const camera = new THREE.PerspectiveCamera(45, W / H, 0.1, 200);
+camera.position.set(0, 9, 9);
+camera.lookAt(0, 0, 0);
+
+window.addEventListener('resize', () => {
+  const w = container.clientWidth, h = container.clientHeight;
+  renderer.setSize(w, h);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+});
+
+/* Lighting */
+const ambient = new THREE.AmbientLight(0x1a1000, 1.2);
+scene.add(ambient);
+
+const keyLight = new THREE.DirectionalLight(0xf5c518, 2.5);
+keyLight.position.set(5, 12, 6);
+keyLight.castShadow = true;
+keyLight.shadow.mapSize.set(2048, 2048);
+scene.add(keyLight);
+
+const fillLight = new THREE.DirectionalLight(0xc9a227, 0.8);
+fillLight.position.set(-6, 8, -4);
+scene.add(fillLight);
+
+const rimLight = new THREE.PointLight(0xf5c518, 1.5, 30);
+rimLight.position.set(0, 6, -8);
+scene.add(rimLight);
+
+const boardLight = new THREE.PointLight(0xffdd88, 0.6, 20);
+boardLight.position.set(0, 2, 0);
+scene.add(boardLight);
+
+/* Materials */
+const matLight = new THREE.MeshStandardMaterial({ color: 0x1e1a0e, roughness: 0.4, metalness: 0.1 });
+const matDark  = new THREE.MeshStandardMaterial({ color: 0x080604, roughness: 0.5, metalness: 0.05 });
+const matBorder = new THREE.MeshStandardMaterial({ color: 0xb08020, roughness: 0.3, metalness: 0.6,
+  emissive: 0x4a3000, emissiveIntensity: 0.3 });
+
+const goldMat = new THREE.MeshStandardMaterial({
+  color: 0xf5c518, roughness: 0.15, metalness: 0.95,
+  emissive: 0xc9a227, emissiveIntensity: 0.25
+});
+const silverMat = new THREE.MeshStandardMaterial({
+  color: 0x888880, roughness: 0.2, metalness: 0.9,
+  emissive: 0x333330, emissiveIntensity: 0.1
+});
+
+/* Board base */
+const boardBase = new THREE.Mesh(
+  new THREE.BoxGeometry(8.8, 0.25, 8.8),
+  matBorder
+);
+boardBase.position.y = -0.15;
+boardBase.receiveShadow = true;
+scene.add(boardBase);
+
+/* Squares */
+const CELL = 1.0;
+for (let r = 0; r < 8; r++) {
+  for (let c = 0; c < 8; c++) {
+    const geo = new THREE.BoxGeometry(CELL, 0.12, CELL);
+    const mat = ((r + c) % 2 === 0) ? matLight : matDark;
+    const sq = new THREE.Mesh(geo, mat);
+    sq.position.set(c * CELL - 3.5, 0, r * CELL - 3.5);
+    sq.receiveShadow = true;
+    scene.add(sq);
   }
 }
-renderBoard();
 
-board3d.parentElement.addEventListener('mousedown', e => {
-  isDragging = true; startX = e.clientX; startY = e.clientY;
-  spinning = false; cancelAnimationFrame(spinAnim);
-});
+/* ─── CHESS PIECE GEOMETRY BUILDER ─── */
+function makePiece(type, mat) {
+  const group = new THREE.Group();
+
+  // Shared base for all pieces
+  const baseCyl = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.38, 0.42, 0.1, 24),
+    mat
+  );
+  baseCyl.position.y = 0.05;
+  baseCyl.castShadow = true;
+  group.add(baseCyl);
+
+  const stemBot = new THREE.Mesh(
+    new THREE.CylinderGeometry(0.18, 0.36, 0.08, 20),
+    mat
+  );
+  stemBot.position.y = 0.14;
+  stemBot.castShadow = true;
+  group.add(stemBot);
+
+  if (type === 'pawn') {
+    const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.18, 0.28, 18), mat);
+    stem.position.y = 0.28;
+    stem.castShadow = true;
+    group.add(stem);
+    const head = new THREE.Mesh(new THREE.SphereGeometry(0.22, 18, 14), mat);
+    head.position.y = 0.52;
+    head.castShadow = true;
+    group.add(head);
+
+  } else if (type === 'rook') {
+    const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.18, 0.38, 18), mat);
+    stem.position.y = 0.33;
+    stem.castShadow = true;
+    group.add(stem);
+    const top = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.16, 0.1, 18), mat);
+    top.position.y = 0.57;
+    top.castShadow = true;
+    group.add(top);
+    // Battlements
+    for (let i = 0; i < 4; i++) {
+      const b = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.14, 0.1), mat);
+      const angle = (i / 4) * Math.PI * 2;
+      b.position.set(Math.cos(angle) * 0.18, 0.69, Math.sin(angle) * 0.18);
+      b.castShadow = true;
+      group.add(b);
+    }
+
+  } else if (type === 'knight') {
+    const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.18, 0.3, 18), mat);
+    stem.position.y = 0.29;
+    stem.castShadow = true;
+    group.add(stem);
+    const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.15, 0.18, 16), mat);
+    neck.position.y = 0.49;
+    neck.rotation.x = -0.3;
+    neck.castShadow = true;
+    group.add(neck);
+    const head = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.3, 0.28), mat);
+    head.position.set(0.04, 0.71, -0.05);
+    head.rotation.x = -0.2;
+    head.castShadow = true;
+    group.add(head);
+    const snout = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.14, 0.18), mat);
+    snout.position.set(0.04, 0.61, 0.1);
+    snout.castShadow = true;
+    group.add(snout);
+
+  } else if (type === 'bishop') {
+    const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.18, 0.44, 18), mat);
+    stem.position.y = 0.36;
+    stem.castShadow = true;
+    group.add(stem);
+    const ball = new THREE.Mesh(new THREE.SphereGeometry(0.2, 18, 14), mat);
+    ball.position.y = 0.64;
+    ball.castShadow = true;
+    group.add(ball);
+    const tip = new THREE.Mesh(new THREE.ConeGeometry(0.07, 0.2, 12), mat);
+    tip.position.y = 0.91;
+    tip.castShadow = true;
+    group.add(tip);
+
+  } else if (type === 'queen') {
+    const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.18, 0.48, 20), mat);
+    stem.position.y = 0.38;
+    stem.castShadow = true;
+    group.add(stem);
+    const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.14, 0.1, 20), mat);
+    collar.position.y = 0.67;
+    collar.castShadow = true;
+    group.add(collar);
+    const crown = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.26, 0.14, 20), mat);
+    crown.position.y = 0.79;
+    crown.castShadow = true;
+    group.add(crown);
+    // Crown spikes
+    for (let i = 0; i < 5; i++) {
+      const spike = new THREE.Mesh(new THREE.ConeGeometry(0.05, 0.18, 8), mat);
+      const a = (i / 5) * Math.PI * 2;
+      spike.position.set(Math.cos(a) * 0.15, 0.97, Math.sin(a) * 0.15);
+      spike.castShadow = true;
+      group.add(spike);
+    }
+    const orb = new THREE.Mesh(new THREE.SphereGeometry(0.1, 14, 10), mat);
+    orb.position.y = 1.01;
+    orb.castShadow = true;
+    group.add(orb);
+
+  } else if (type === 'king') {
+    const stem = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.18, 0.52, 20), mat);
+    stem.position.y = 0.4;
+    stem.castShadow = true;
+    group.add(stem);
+    const collar = new THREE.Mesh(new THREE.CylinderGeometry(0.27, 0.15, 0.1, 20), mat);
+    collar.position.y = 0.71;
+    collar.castShadow = true;
+    group.add(collar);
+    const crown = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.27, 0.16, 20), mat);
+    crown.position.y = 0.84;
+    crown.castShadow = true;
+    group.add(crown);
+    // Cross
+    const crossV = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.32, 0.07), mat);
+    crossV.position.y = 1.08;
+    crossV.castShadow = true;
+    group.add(crossV);
+    const crossH = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.07, 0.07), mat);
+    crossH.position.y = 1.16;
+    crossH.castShadow = true;
+    group.add(crossH);
+  }
+
+  return group;
+}
+
+/* Place pieces on board */
+const INIT_BOARD = [
+  ['rook','knight','bishop','queen','king','bishop','knight','rook'],
+  ['pawn','pawn','pawn','pawn','pawn','pawn','pawn','pawn'],
+  [null,null,null,null,null,null,null,null],
+  [null,null,null,null,null,null,null,null],
+  [null,null,null,null,null,null,null,null],
+  [null,null,null,null,null,null,null,null],
+  ['pawn','pawn','pawn','pawn','pawn','pawn','pawn','pawn'],
+  ['rook','knight','bishop','queen','king','bishop','knight','rook'],
+];
+
+const pieceObjects = [];
+
+function placePieces(board) {
+  // Remove old pieces
+  pieceObjects.forEach(p => scene.remove(p));
+  pieceObjects.length = 0;
+
+  board.forEach((row, r) => {
+    row.forEach((type, c) => {
+      if (!type) return;
+      const isWhite = r >= 6;
+      const mat = isWhite ? goldMat : silverMat;
+      const piece = makePiece(type, mat.clone());
+      piece.position.set(c * CELL - 3.5, 0.1, r * CELL - 3.5);
+      if (!isWhite) piece.rotation.y = Math.PI;
+      piece.traverse(m => { if (m.isMesh) { m.castShadow = true; m.receiveShadow = true; } });
+      scene.add(piece);
+      pieceObjects.push(piece);
+    });
+  });
+}
+
+placePieces(INIT_BOARD);
+
+/* Fog */
+scene.fog = new THREE.FogExp2(0x050505, 0.045);
+
+/* ── MOUSE DRAG ORBIT ── */
+let isDragging = false, prevX = 0, prevY = 0;
+let camTheta = 0, camPhi = 0.55, camDist = 12;
+const camTarget = new THREE.Vector3(0, 0, 0);
+
+function updateCamera() {
+  camera.position.x = camTarget.x + camDist * Math.sin(camPhi) * Math.sin(camTheta);
+  camera.position.y = camTarget.y + camDist * Math.cos(camPhi);
+  camera.position.z = camTarget.z + camDist * Math.sin(camPhi) * Math.cos(camTheta);
+  camera.lookAt(camTarget);
+}
+updateCamera();
+
+container.addEventListener('mousedown', e => { isDragging = true; prevX = e.clientX; prevY = e.clientY; });
+window.addEventListener('mouseup', () => isDragging = false);
 window.addEventListener('mousemove', e => {
   if (!isDragging) return;
-  rotY += (e.clientX - startX) * 0.5;
-  rotX -= (e.clientY - startY) * 0.3;
-  rotX = Math.max(-60, Math.min(80, rotX));
-  startX = e.clientX; startY = e.clientY;
-  board3d.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+  camTheta -= (e.clientX - prevX) * 0.008;
+  camPhi   -= (e.clientY - prevY) * 0.006;
+  camPhi    = Math.max(0.15, Math.min(1.4, camPhi));
+  prevX = e.clientX; prevY = e.clientY;
+  updateCamera();
 });
-window.addEventListener('mouseup', () => isDragging = false);
+container.addEventListener('wheel', e => {
+  camDist += e.deltaY * 0.01;
+  camDist = Math.max(6, Math.min(20, camDist));
+  updateCamera();
+  e.preventDefault();
+}, { passive: false });
 
-board3d.parentElement.addEventListener('touchstart', e => {
-  startX = e.touches[0].clientX; startY = e.touches[0].clientY;
-  spinning = false;
-}, {passive:true});
-board3d.parentElement.addEventListener('touchmove', e => {
-  rotY += (e.touches[0].clientX - startX)*0.5;
-  rotX -= (e.touches[0].clientY - startY)*0.3;
-  rotX = Math.max(-60, Math.min(80, rotX));
-  startX = e.touches[0].clientX; startY = e.touches[0].clientY;
-  board3d.style.transform = `rotateX(${rotX}deg) rotateY(${rotY}deg)`;
-}, {passive:true});
+container.addEventListener('touchstart', e => { prevX = e.touches[0].clientX; prevY = e.touches[0].clientY; isDragging = true; }, { passive: true });
+container.addEventListener('touchmove', e => {
+  if (!isDragging) return;
+  camTheta -= (e.touches[0].clientX - prevX) * 0.008;
+  camPhi   -= (e.touches[0].clientY - prevY) * 0.006;
+  camPhi    = Math.max(0.15, Math.min(1.4, camPhi));
+  prevX = e.touches[0].clientX; prevY = e.touches[0].clientY;
+  updateCamera();
+}, { passive: true });
+container.addEventListener('touchend', () => isDragging = false);
+
+/* Controls */
+let autoSpin = false, spinRAF;
 
 function resetBoard() {
-  boardState = INIT_BOARD.map(r=>[...r]);
-  rotX = 30; rotY = 0;
-  board3d.style.transform = `rotateX(30deg) rotateY(0deg)`;
-  renderBoard();
+  placePieces(INIT_BOARD);
+  camTheta = 0; camPhi = 0.55; camDist = 12;
+  updateCamera();
+  autoSpin = false;
 }
 function randomizeBoard() {
-  const all = INIT_BOARD.flat().filter(Boolean);
-  for (let i=all.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[all[i],all[j]]=[all[j],all[i]];}
-  let idx=0;
-  boardState = Array.from({length:8},(_,r)=>Array.from({length:8},(_,c)=>{
-    if([0,1,6,7].includes(r)) return all[idx++]||'';
-    return '';
-  }));
-  renderBoard();
+  const types = ['rook','knight','bishop','queen','king','bishop','knight','rook','pawn','pawn','pawn','pawn','pawn','pawn','pawn','pawn'];
+  const shuffled = [...types].sort(() => Math.random() - 0.5);
+  const newBoard = INIT_BOARD.map((row, r) =>
+    row.map((_, c) => {
+      if (r === 0) return shuffled[c];
+      if (r === 1) return shuffled[c + 8];
+      if (r === 6) return 'pawn';
+      if (r === 7) return shuffled[c];
+      return null;
+    })
+  );
+  placePieces(newBoard);
 }
 function toggleSpin() {
-  spinning = !spinning;
-  if (spinning) { (function loop(){ if(!spinning)return; rotY+=0.4; board3d.style.transform=`rotateX(${rotX}deg) rotateY(${rotY}deg)`; spinAnim=requestAnimationFrame(loop); })(); }
-  else cancelAnimationFrame(spinAnim);
+  autoSpin = !autoSpin;
 }
+
+/* Piece float animation */
+let t = 0;
+function animatePieces(time) {
+  pieceObjects.forEach((p, i) => {
+    p.position.y = 0.1 + Math.sin(time * 0.001 + i * 0.6) * 0.04;
+  });
+}
+
+/* Render loop */
+function animate(time) {
+  requestAnimationFrame(animate);
+  if (autoSpin) { camTheta += 0.004; updateCamera(); }
+  animatePieces(time);
+  renderer.render(scene, camera);
+}
+animate(0);
 
 /* ── GITHUB DATA ── */
 async function loadGitHub() {
@@ -720,30 +967,22 @@ async function loadGitHub() {
     const user = await userRes.json();
     const repos = await reposRes.json();
 
-    // Stats
     document.getElementById('stat-repos').textContent = user.public_repos || '—';
     document.getElementById('stat-followers').textContent = user.followers || '—';
     let totalStars = 0, totalCommits = 0;
-    if (Array.isArray(repos)) {
-      repos.forEach(r => totalStars += r.stargazers_count || 0);
-    }
+    if (Array.isArray(repos)) repos.forEach(r => totalStars += r.stargazers_count || 0);
     document.getElementById('stat-stars').textContent = totalStars;
 
-    // Commits (approximate via events)
     try {
       const evRes = await fetch('https://api.github.com/users/Atlas-BES/events?per_page=100');
       const events = await evRes.json();
-      if (Array.isArray(events)) {
-        events.forEach(ev => { if (ev.type==='PushEvent') totalCommits += ev.payload?.size||0; });
-      }
+      if (Array.isArray(events)) events.forEach(ev => { if (ev.type==='PushEvent') totalCommits += ev.payload?.size||0; });
     } catch(e) {}
     document.getElementById('stat-commits').textContent = totalCommits || '—';
 
-    // Repos
     const grid = document.getElementById('reposGrid');
     if (!Array.isArray(repos) || repos.length===0) {
-      grid.innerHTML = `<div class="loading-repos">No public repositories found.</div>`;
-      return;
+      grid.innerHTML = `<div class="loading-repos">No public repositories found.</div>`; return;
     }
     const langColors = {JavaScript:'#f1e05a',Python:'#3572A5',HTML:'#e34c26',CSS:'#563d7c',TypeScript:'#3178c6',Shell:'#89e051',Jupyter:'#DA5B0B'};
     grid.innerHTML = repos.map(r => `
@@ -772,50 +1011,24 @@ async function loadGitHub() {
   }
 }
 
-/* ── YOUTUBE VIDEOS ── */
+/* ── YOUTUBE ── */
 async function loadYouTube() {
   const grid = document.getElementById('videosGrid');
-  // Curated placeholder videos (YouTube RSS doesn't allow CORS; actual embed requires channel ID API key)
-  // We'll use noembed/oEmbed approach and show channel link
-  const channelId = 'AtlasBES';
-  
-  // Use YouTube RSS feed via noembed or show featured channel card
-  const VIDEOS = [
-    { id: null, title: 'Latest Videos on @AtlasBES', thumb: null, date: 'YouTube Channel' },
-  ];
-
-  // Attempt to fetch via YouTube's public RSS/oEmbed
-  try {
-    // Try to load via a CORS-friendly approach
-    const rssUrl = `https://www.youtube.com/@AtlasBES/videos`;
-    grid.innerHTML = `
-      <div style="grid-column:1/-1;text-align:center;padding:40px 20px;background:var(--panel);border:1px solid var(--border);">
-        <div style="font-family:'Cinzel',serif;font-size:1.1rem;color:var(--gold);margin-bottom:12px;letter-spacing:0.2em;">♟ @AtlasBES on YouTube</div>
-        <div style="color:var(--muted);font-size:0.85rem;margin-bottom:24px;line-height:1.8;">
-          YouTube's API requires server-side authentication.<br>Visit the channel directly to watch all videos.
-        </div>
-        <a href="https://www.youtube.com/@AtlasBES" target="_blank"
-          style="display:inline-block;padding:12px 32px;border:1px solid var(--gold);color:var(--gold);
-          text-decoration:none;font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.2em;
-          text-transform:uppercase;transition:all 0.3s;"
-          onmouseover="this.style.background='rgba(245,197,24,0.08)'"
-          onmouseout="this.style.background='transparent'">
-          ▶ Visit Channel
-        </a>
+  grid.innerHTML = `
+    <div style="grid-column:1/-1;text-align:center;padding:40px 20px;background:var(--panel);border:1px solid var(--border);">
+      <div style="font-family:'Cinzel',serif;font-size:1.1rem;color:var(--gold);margin-bottom:12px;letter-spacing:0.2em;">♟ @AtlasBES on YouTube</div>
+      <div style="color:var(--muted);font-size:0.85rem;margin-bottom:24px;line-height:1.8;">
+        YouTube's API requires server-side authentication.<br>Visit the channel directly to watch all videos.
       </div>
-      ${buildChannelFeed()}
-    `;
-  } catch(e) {
-    grid.innerHTML = buildChannelFeed();
-  }
-}
-
-function buildChannelFeed() {
-  // Show embedded YouTube channel search widget cards
-  const videoIds = [
-    // Placeholder: direct embed of YouTube channel page as iframe cards
-  ];
-  return `
+      <a href="https://www.youtube.com/@AtlasBES" target="_blank"
+        style="display:inline-block;padding:12px 32px;border:1px solid var(--gold);color:var(--gold);
+        text-decoration:none;font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.2em;
+        text-transform:uppercase;transition:all 0.3s;"
+        onmouseover="this.style.background='rgba(245,197,24,0.08)'"
+        onmouseout="this.style.background='transparent'">
+        ▶ Visit Channel
+      </a>
+    </div>
     <div class="video-card reveal" onclick="window.open('https://www.youtube.com/@AtlasBES','_blank')">
       <div class="video-thumb" style="background:linear-gradient(135deg,#0f0f0f,#1a1200);padding-top:56.25%;position:relative;overflow:hidden;">
         <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
@@ -829,12 +1042,9 @@ function buildChannelFeed() {
       </div>
     </div>
     <div class="video-card reveal" style="grid-column:span 2;">
-      <iframe
-        style="width:100%;aspect-ratio:16/9;border:none;display:block;"
+      <iframe style="width:100%;aspect-ratio:16/9;border:none;display:block;"
         src="https://www.youtube.com/embed?listType=user_uploads&list=AtlasBES"
-        allow="autoplay;encrypted-media"
-        allowfullscreen>
-      </iframe>
+        allow="autoplay;encrypted-media" allowfullscreen></iframe>
       <div class="video-info">
         <div class="video-title">Atlas BES — Full Channel Feed</div>
         <div class="video-date">Tech Extremist · DIY · Creative Design</div>
@@ -852,9 +1062,7 @@ function observeReveal() {
   els.forEach(el => io.observe(el));
 }
 
-/* ── INIT ── */
 observeReveal();
 loadGitHub();
 loadYouTube();
 </script>
-</body>
