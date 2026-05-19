@@ -334,40 +334,133 @@ nav {
 .btn-ghost.active { border-color: var(--gold); color: var(--gold); background: rgba(245,197,24,0.08); }
 
 /* ─── STATS ─── */
+/* ─── STAT CARDS (flip) ─── */
 #stats {
   position: relative; z-index: 1;
   padding: 60px 48px;
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 2px;
-  max-width: 900px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  max-width: 960px; margin: 0 auto;
 }
 .stat-card {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  padding: 36px 24px;
-  text-align: center;
-  position: relative; overflow: hidden;
-  transition: border-color 0.3s, transform 0.3s;
+  perspective: 900px;
+  height: 240px;
+  cursor: pointer;
 }
-.stat-card::before {
+.stat-card-inner {
+  position: relative; width: 100%; height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(.4,0,.2,1);
+}
+.stat-card:hover .stat-card-inner {
+  transform: rotateY(180deg);
+}
+/* front & back share */
+.stat-face, .stat-back {
+  position: absolute; inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+/* ── FRONT ── */
+.stat-face {
+  background: var(--panel);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 10px;
+}
+.stat-face::before {
   content: ''; position: absolute;
   top: 0; left: 0; right: 0; height: 1px;
   background: linear-gradient(90deg, transparent, var(--gold), transparent);
-  opacity: 0;
-  transition: opacity 0.3s;
 }
-.stat-card:hover { border-color: rgba(245,197,24,0.4); transform: translateY(-4px); }
-.stat-card:hover::before { opacity: 1; }
+.stat-face::after {
+  content: ''; position: absolute;
+  bottom: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+  opacity: 0.4;
+}
 .stat-num {
   font-family: 'Cinzel Decorative', serif;
-  font-size: 2.8rem; color: var(--gold);
+  font-size: 3rem; color: var(--gold);
   line-height: 1;
-  text-shadow: 0 0 20px var(--gold-glow);
+  text-shadow: 0 0 30px var(--gold-glow), 0 0 60px rgba(245,197,24,0.1);
+  position: relative; z-index: 1;
 }
 .stat-label {
-  font-family: 'Cinzel', serif; font-size: 0.65rem;
-  letter-spacing: 0.3em; color: var(--muted);
-  text-transform: uppercase; margin-top: 8px;
+  font-family: 'Cinzel', serif; font-size: 0.62rem;
+  letter-spacing: 0.35em; color: var(--muted);
+  text-transform: uppercase;
+  position: relative; z-index: 1;
+}
+.stat-face-icon {
+  font-size: 1.6rem; opacity: 0.15;
+  position: absolute; bottom: 14px; right: 16px;
+}
+.stat-hint {
+  font-family: 'Cinzel', serif; font-size: 0.5rem;
+  letter-spacing: 0.25em; color: var(--muted);
+  text-transform: uppercase; opacity: 0.5;
+  position: absolute; bottom: 10px; left: 0; right: 0;
+  text-align: center;
+}
+/* ── BACK ── */
+.stat-back {
+  background: #080604;
+  transform: rotateY(180deg);
+  display: flex; flex-direction: column;
+  align-items: stretch;
+  padding: 0;
+}
+.stat-back-header {
+  padding: 10px 14px 6px;
+  border-bottom: 1px solid rgba(245,197,24,0.12);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.stat-back-label {
+  font-family: 'Cinzel', serif; font-size: 0.55rem;
+  letter-spacing: 0.3em; color: var(--gold-dim);
+  text-transform: uppercase;
+}
+.stat-back-num {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 0.95rem; color: var(--gold);
+  text-shadow: 0 0 10px var(--gold-glow);
+}
+.stat-pieces-grid {
+  flex: 1;
+  display: flex; flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 1px;
+  padding: 8px 10px;
+  overflow: hidden;
+}
+.stat-piece {
+  font-size: 1.05rem;
+  color: var(--gold);
+  filter: drop-shadow(0 0 3px rgba(245,197,24,0.55));
+  line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  width: 22px; height: 22px;
+  animation: piecePop 0.3s ease both;
+}
+.stat-piece.overflow-piece {
+  font-size: 0.7rem;
+  opacity: 0.5;
+  width: 14px; height: 14px;
+}
+@keyframes piecePop {
+  from { opacity: 0; transform: scale(0.4) rotate(-20deg); }
+  to   { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+.stat-back-footer {
+  padding: 6px 10px;
+  border-top: 1px solid rgba(245,197,24,0.08);
+  font-size: 0.5rem; color: var(--muted);
+  font-family: 'Cinzel', serif; letter-spacing: 0.15em;
+  text-align: center; flex-shrink: 0;
 }
 
 /* ─── PROJECTS ─── */
@@ -913,22 +1006,83 @@ footer {
 
 <!-- STATS -->
 <section id="stats">
+
   <div class="stat-card reveal">
-    <div class="stat-num" id="stat-repos">—</div>
-    <div class="stat-label">Repositories</div>
+    <div class="stat-card-inner">
+      <div class="stat-face">
+        <div class="stat-num" id="stat-repos">—</div>
+        <div class="stat-label">Repositories</div>
+        <div class="stat-face-icon">♜</div>
+        <div class="stat-hint">hover to reveal</div>
+      </div>
+      <div class="stat-back">
+        <div class="stat-back-header">
+          <span class="stat-back-label">Repositories</span>
+          <span class="stat-back-num" id="stat-repos-back">—</span>
+        </div>
+        <div class="stat-pieces-grid" id="pieces-repos"></div>
+        <div class="stat-back-footer">each ♜ = 1 repository</div>
+      </div>
+    </div>
   </div>
+
   <div class="stat-card reveal">
-    <div class="stat-num" id="stat-commits">—</div>
-    <div class="stat-label">Commits</div>
+    <div class="stat-card-inner">
+      <div class="stat-face">
+        <div class="stat-num" id="stat-commits">—</div>
+        <div class="stat-label">Commits</div>
+        <div class="stat-face-icon">♞</div>
+        <div class="stat-hint">hover to reveal</div>
+      </div>
+      <div class="stat-back">
+        <div class="stat-back-header">
+          <span class="stat-back-label">Commits</span>
+          <span class="stat-back-num" id="stat-commits-back">—</span>
+        </div>
+        <div class="stat-pieces-grid" id="pieces-commits"></div>
+        <div class="stat-back-footer" id="pieces-commits-footer">each ♞ = 1 commit</div>
+      </div>
+    </div>
   </div>
+
   <div class="stat-card reveal">
-    <div class="stat-num" id="stat-stars">—</div>
-    <div class="stat-label">Stars Earned</div>
+    <div class="stat-card-inner">
+      <div class="stat-face">
+        <div class="stat-num" id="stat-stars">—</div>
+        <div class="stat-label">Stars Earned</div>
+        <div class="stat-face-icon">♛</div>
+        <div class="stat-hint">hover to reveal</div>
+      </div>
+      <div class="stat-back">
+        <div class="stat-back-header">
+          <span class="stat-back-label">Stars Earned</span>
+          <span class="stat-back-num" id="stat-stars-back">—</span>
+        </div>
+        <div class="stat-pieces-grid" id="pieces-stars"></div>
+        <div class="stat-back-footer" id="pieces-stars-footer">each ♛ = 1 star</div>
+      </div>
+    </div>
   </div>
+
   <div class="stat-card reveal">
-    <div class="stat-num" id="stat-followers">—</div>
-    <div class="stat-label">Followers</div>
+    <div class="stat-card-inner">
+      <div class="stat-face">
+        <div class="stat-num" id="stat-followers">—</div>
+        <div class="stat-label">Followers</div>
+        <div class="stat-face-icon">♟</div>
+        <div class="stat-hint">hover to reveal</div>
+      </div>
+      <div class="stat-back">
+        <div class="stat-back-header">
+          <span class="stat-back-label">Followers</span>
+          <span class="stat-back-num" id="stat-followers-back">—</span>
+        </div>
+        <div class="stat-pieces-grid" id="pieces-followers"></div>
+        <div class="stat-back-footer" id="pieces-followers-footer">each ♟ = 1 follower</div>
+      </div>
+    </div>
   </div>
+
 </section>
 
 <hr class="divider">
@@ -1707,6 +1861,54 @@ scene.fog=new THREE.FogExp2(0x050505,0.038);
 scoreWhite=0; scoreBlack=0;
 initGame();
 
+/* ── CHESS PIECE FILL HELPER ── */
+function fillPieceGrid(containerId, backNumId, footerId, count, piece, label, scale) {
+  const raw = parseInt(count) || 0;
+  document.getElementById(backNumId).textContent = raw;
+
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  // Figure out how many fit: measure card back grid area (~200×160px usable)
+  // piece cell = 23px wide × 23px tall with 1px gap → ~8 cols × 7 rows = 56 max at normal size
+  const MAX_DISPLAY = 56;
+  const MAX_SMALL   = 120;
+
+  let html = '';
+  let piecesShown = 0;
+  let scaleNote = '';
+
+  if (raw <= MAX_DISPLAY) {
+    // Show one piece per unit
+    for (let i = 0; i < raw; i++) {
+      const delay = (i * 18) % 400;
+      html += `<span class="stat-piece" style="animation-delay:${delay}ms">${piece}</span>`;
+    }
+    piecesShown = raw;
+    scaleNote = `each ${piece} = 1 ${label}`;
+  } else {
+    // Scale down: pick a divisor so we show at most MAX_SMALL pieces
+    let divisor = 1;
+    const thresholds = [2,5,10,25,50,100,250,500,1000];
+    for (const t of thresholds) {
+      if (Math.ceil(raw / t) <= MAX_SMALL) { divisor = t; break; }
+    }
+    if (divisor === 1 && Math.ceil(raw / 1000) > MAX_SMALL) divisor = Math.ceil(raw / MAX_SMALL);
+
+    const displayCount = Math.min(Math.ceil(raw / divisor), MAX_SMALL);
+    const isSmall = displayCount > MAX_DISPLAY;
+    for (let i = 0; i < displayCount; i++) {
+      const delay = (i * 12) % 400;
+      html += `<span class="stat-piece${isSmall ? ' overflow-piece' : ''}" style="animation-delay:${delay}ms">${piece}</span>`;
+    }
+    piecesShown = displayCount;
+    scaleNote = `each ${piece} = ${divisor} ${label}${divisor > 1 ? 's' : ''}`;
+  }
+
+  container.innerHTML = html;
+  if (footerId) document.getElementById(footerId).textContent = scaleNote;
+}
+
 /* ── GITHUB DATA — ACE CARDS ── */
 const SUITS = ['♠','♣','♦','♥','♠','♣','♦','♥','♠','♣','♦','♥'];
 const SUIT_COLORS = {'♠':'#f5c518','♣':'#c9a227','♦':'#e8c84a','♥':'#d4a820'};
@@ -1729,6 +1931,12 @@ async function loadGitHub(){
       if(Array.isArray(ev)) ev.forEach(e=>{if(e.type==='PushEvent') commits+=e.payload?.size||0;});
     }catch(e){}
     document.getElementById('stat-commits').textContent=commits||'—';
+
+    // Fill chess piece grids on card backs
+    fillPieceGrid('pieces-repos',    'stat-repos-back',     null,                  user.public_repos||0, '♜', 'repo',     1);
+    fillPieceGrid('pieces-commits',  'stat-commits-back',   'pieces-commits-footer', commits||0,           '♞', 'commit',   1);
+    fillPieceGrid('pieces-stars',    'stat-stars-back',     'pieces-stars-footer',   stars||0,             '♛', 'star',     1);
+    fillPieceGrid('pieces-followers','stat-followers-back', 'pieces-followers-footer',user.followers||0,   '♟', 'follower', 1);
 
     const deck=document.getElementById('card-deck');
     if(!Array.isArray(repos)||!repos.length){
@@ -1780,6 +1988,7 @@ async function loadGitHub(){
         <a href="https://github.com/Atlas-BES" target="_blank" style="color:var(--gold);font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.2em;">View on GitHub →</a>
       </div>`;
     ['stat-repos','stat-commits','stat-stars','stat-followers'].forEach(id=>document.getElementById(id).textContent='—');
+    ['stat-repos-back','stat-commits-back','stat-stars-back','stat-followers-back'].forEach(id=>document.getElementById(id).textContent='—');
   }
 }
 
@@ -1830,3 +2039,4 @@ function observeReveal(){
 observeReveal(); loadGitHub(); loadYouTube();
 </script>
 </body>
+</html>
