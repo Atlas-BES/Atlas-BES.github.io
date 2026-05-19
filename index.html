@@ -85,13 +85,75 @@ nav {
 .nav-links a:hover { color: var(--gold); }
 
 /* ─── HERO ─── */
+/* ─── HERO LAYOUT ─── */
 #hero {
   position: relative; z-index: 1;
   min-height: 100vh;
   display: flex; align-items: center; justify-content: center;
-  flex-direction: column;
+  padding: 120px 40px 60px;
+}
+.hero-inner {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 40px;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+}
+.hero-mindmap-left  { display: flex; justify-content: flex-end;   align-items: center; }
+.hero-mindmap-right { display: flex; justify-content: flex-start; align-items: center; }
+@media(max-width: 900px) {
+  .hero-inner { grid-template-columns: 1fr; justify-items: center; gap: 32px; }
+  .hero-mindmap-left, .hero-mindmap-right { display: none; }
+}
+.hero-center {
+  display: flex; flex-direction: column; align-items: center;
   text-align: center;
-  padding: 120px 24px 60px;
+}
+
+/* Mind map canvas */
+.mindmap-canvas {
+  width: 380px; height: 460px;
+  position: relative; overflow: visible;
+  flex-shrink: 0;
+}
+.mindmap-canvas svg {
+  width: 100%; height: 100%;
+  overflow: visible;
+}
+/* Mind map nodes */
+.mm-node-root rect {
+  fill: #0f0d06; stroke: #f5c518; stroke-width: 1.5;
+  filter: drop-shadow(0 0 8px rgba(245,197,24,0.5));
+}
+.mm-node rect {
+  fill: #0a0804; stroke: rgba(245,197,24,0.4); stroke-width: 1;
+  transition: stroke 0.3s, filter 0.3s;
+  cursor: pointer;
+}
+.mm-node:hover rect { stroke: #f5c518; filter: drop-shadow(0 0 6px rgba(245,197,24,0.6)); }
+.mm-node text, .mm-node-root text {
+  font-family: 'Press Start 2P', monospace;
+  fill: #f5c518; font-size: 5px;
+  pointer-events: none;
+}
+.mm-node-root text { font-size: 6px; fill: #f5c518; }
+.mm-node .mm-label { fill: #c9a227; }
+.mm-edge {
+  fill: none; stroke: rgba(245,197,24,0.25); stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+.mm-edge-pulse {
+  fill: none; stroke: rgba(245,197,24,0.5); stroke-width: 1.5;
+  stroke-dasharray: 4 8;
+  animation: dashFlow 3s linear infinite;
+}
+@keyframes dashFlow {
+  to { stroke-dashoffset: -36; }
+}
+.mm-loading-text {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 5px; fill: rgba(245,197,24,0.4);
 }
 .hero-eyebrow {
   font-family: 'Press Start 2P', monospace;
@@ -107,7 +169,16 @@ nav {
   color: var(--gold);
   text-shadow: 0 0 40px rgba(245,197,24,0.4), 0 0 80px rgba(245,197,24,0.1);
   animation: fadeUp 1s 0.2s ease both;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.12em;
+  display: flex; gap: 0.08em; justify-content: center;
+}
+.hero-name .wave-letter {
+  display: inline-block;
+  animation: waveJump 1.8s ease-in-out infinite;
+}
+@keyframes waveJump {
+  0%, 60%, 100% { transform: translateY(0); }
+  30%           { transform: translateY(-14px); }
 }
 .hero-sub {
   font-family: 'Press Start 2P', monospace;
@@ -886,7 +957,7 @@ footer {
 <canvas id="chessCanvas"></canvas>
 
 <nav>
-  <div class="nav-logo"><span style="font-size:1.4rem;vertical-align:middle;margin-right:6px">♜</span> ATLAS</div>
+  <div class="nav-logo"><span style="font-size:1.4rem;line-height:1;display:inline-flex;align-items:center;margin-right:8px;transform:translateY(1px)">♜</span>ATLAS</div>
   <div class="nav-links">
     <a href="#hero">Home</a>
     <a href="#board-section">Board</a>
@@ -897,23 +968,50 @@ footer {
 
 <!-- HERO -->
 <section id="hero">
-  <div class="hero-eyebrow">GitHub Portfolio</div>
-  <h1 class="hero-name">ATLAS</h1>
-  <div class="hero-sub">Tech Extremist &nbsp;·&nbsp; Builder &nbsp;·&nbsp; Creator</div>
+  <div class="hero-inner">
 
-  <div class="hero-avatar-wrap">
-    <div class="avatar-ring2"></div>
-    <div class="avatar-ring"></div>
-    <img class="hero-avatar"
-      src="https://avatars.githubusercontent.com/u/180035744?v=4"
-      alt="Atlas Profile"
-      onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><rect fill=%22%230f0f0f%22 width=%22200%22 height=%22200%22/><text x=%2250%%22 y=%2250%%22 font-size=%2280%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22>♚</text></svg>'">
-  </div>
-  <div class="hero-bio">Tech Extremist, loves DIY projects and Creative design work.</div>
+    <!-- LEFT: mind map -->
+    <div class="hero-mindmap-left">
+      <div class="mindmap-canvas" id="mindmap-wrap">
+        <svg id="mindmap-svg" viewBox="0 0 380 460" xmlns="http://www.w3.org/2000/svg">
+          <text class="mm-loading-text" x="190" y="230" text-anchor="middle">Loading repos…</text>
+        </svg>
+      </div>
+    </div>
 
-  <div class="hero-scroll">
-    <div class="scroll-line"></div>
-    <span>Scroll</span>
+    <!-- CENTER: profile -->
+    <div class="hero-center">
+      <div class="hero-eyebrow">GitHub Portfolio</div>
+
+      <h1 class="hero-name" id="hero-name-wave">
+        <span class="wave-letter" style="animation-delay:0s">A</span>
+        <span class="wave-letter" style="animation-delay:0.12s">T</span>
+        <span class="wave-letter" style="animation-delay:0.24s">L</span>
+        <span class="wave-letter" style="animation-delay:0.36s">A</span>
+        <span class="wave-letter" style="animation-delay:0.48s">S</span>
+      </h1>
+
+      <div class="hero-sub">Tech Extremist &nbsp;·&nbsp; Builder &nbsp;·&nbsp; Creator</div>
+
+      <div class="hero-avatar-wrap">
+        <div class="avatar-ring2"></div>
+        <div class="avatar-ring"></div>
+        <img class="hero-avatar"
+          src="https://avatars.githubusercontent.com/u/180035744?v=4"
+          alt="Atlas Profile"
+          onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><rect fill=%22%230f0f0f%22 width=%22200%22 height=%22200%22/><text x=%2250%%22 y=%2250%%22 font-size=%2280%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22>♚</text></svg>'">
+      </div>
+      <div class="hero-bio">Tech Extremist, loves DIY projects and Creative design work.</div>
+
+      <div class="hero-scroll">
+        <div class="scroll-line"></div>
+        <span>Scroll</span>
+      </div>
+    </div>
+
+    <!-- RIGHT: empty column to balance grid -->
+    <div class="hero-mindmap-right"></div>
+
   </div>
 </section>
 
@@ -1942,6 +2040,10 @@ async function loadGitHub(){
     fillPieceGrid('pieces-followers','stat-followers-back', 'pieces-followers-footer',user.followers||0,   '♟', 'follower', 1);
 
     const deck=document.getElementById('card-deck');
+
+    // Build hero mind map from repos
+    buildMindMap(Array.isArray(repos) ? repos : []);
+
     if(!Array.isArray(repos)||!repos.length){
       deck.innerHTML='<div class="deck-loading">No repositories found.</div>'; return;
     }
@@ -2039,7 +2141,73 @@ function observeReveal(){
   document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 }
 
+/* ── MIND MAP ── */
+function buildMindMap(repos) {
+  const svg = document.getElementById('mindmap-svg');
+  if (!svg) return;
+
+  const W = 380, H = 460;
+  const cx = W / 2, cy = H / 2;
+
+  // Root node
+  const rootW = 80, rootH = 28;
+  const rootX = cx - rootW / 2, rootY = cy - rootH / 2;
+
+  // Layout repos in a radial pattern
+  const count = Math.min(repos.length, 10);
+  const nodes = repos.slice(0, count).map((r, i) => {
+    const angle = (i / count) * Math.PI * 2 - Math.PI / 2;
+    const radius = 155;
+    const nx = cx + Math.cos(angle) * radius;
+    const ny = cy + Math.sin(angle) * radius;
+    const label = r.name.length > 12 ? r.name.slice(0, 11) + '…' : r.name;
+    const lang  = r.language ? r.language.slice(0, 8) : '';
+    return { nx, ny, label, lang, url: r.html_url, stars: r.stargazers_count, angle };
+  });
+
+  const nodeW = 100, nodeH = 30;
+
+  // Build SVG string
+  let s = '';
+
+  // Animated edges (draw first so they're behind nodes)
+  nodes.forEach(n => {
+    // Static base line
+    s += `<line class="mm-edge" x1="${cx}" y1="${cy}" x2="${n.nx}" y2="${n.ny}"/>`;
+    // Animated dash overlay
+    s += `<line class="mm-edge-pulse" x1="${cx}" y1="${cy}" x2="${n.nx}" y2="${n.ny}" style="animation-delay:${Math.random().toFixed(2)}s"/>`;
+  });
+
+  // Repo nodes
+  nodes.forEach((n, i) => {
+    const nx = n.nx - nodeW / 2, ny = n.ny - nodeH / 2;
+    const delay = (i * 0.08).toFixed(2);
+    s += `
+    <g class="mm-node" transform="translate(0,0)" style="cursor:pointer" onclick="window.open('${n.url}','_blank')">
+      <rect x="${nx}" y="${ny}" width="${nodeW}" height="${nodeH}" rx="3"/>
+      <text x="${n.nx}" y="${n.ny - 3}" text-anchor="middle" font-size="4.5px" fill="#f5c518">${n.label}</text>
+      <text x="${n.nx}" y="${n.ny + 8}" text-anchor="middle" font-size="3.8px" fill="rgba(245,197,24,0.55)">${n.lang}${n.stars > 0 ? ' ★' + n.stars : ''}</text>
+    </g>`;
+  });
+
+  // Root node (on top)
+  s += `
+  <g class="mm-node-root">
+    <rect x="${rootX}" y="${rootY}" width="${rootW}" height="${rootH}" rx="4"/>
+    <text x="${cx}" y="${cy - 4}" text-anchor="middle" font-size="5.5px" fill="#f5c518">ATLAS</text>
+    <text x="${cx}" y="${cy + 7}" text-anchor="middle" font-size="3.8px" fill="rgba(245,197,24,0.6)">repos</text>
+  </g>`;
+
+  // Decorative corner marks
+  const corners = [[8,8],[W-8,8],[8,H-8],[W-8,H-8]];
+  corners.forEach(([x,y]) => {
+    s += `<text x="${x}" y="${y+4}" font-size="8px" fill="rgba(245,197,24,0.12)" text-anchor="middle" font-family="serif">♜</text>`;
+  });
+
+  svg.innerHTML = s;
+}
+
 observeReveal(); loadGitHub(); loadYouTube();
 </script>
 </body>
-</html>
+
