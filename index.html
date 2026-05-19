@@ -429,6 +429,233 @@ nav {
   letter-spacing: 0.2em; font-size: 0.8rem;
 }
 
+/* ─── ACE CARD DECK ─── */
+#projects {
+  position: relative; z-index: 1;
+  padding: 80px 48px;
+  max-width: 1200px; margin: 0 auto;
+}
+.projects-header {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 56px; flex-wrap: wrap; gap: 16px;
+}
+#card-deck-wrap {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 40px;
+  align-items: start;
+}
+@media(max-width:860px){ #card-deck-wrap{ grid-template-columns:1fr; } }
+
+#card-deck {
+  position: relative;
+  min-height: 380px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  align-items: flex-start;
+  padding: 60px 0 20px 20px;
+}
+.deck-loading {
+  color: var(--muted); font-family:'Cinzel',serif;
+  font-size:0.8rem; letter-spacing:0.2em; padding:60px;
+}
+
+/* Individual ace card */
+.ace-card {
+  position: relative;
+  width: 140px;
+  height: 196px;
+  background: linear-gradient(145deg, #111008, #0d0c07);
+  border: 1px solid rgba(245,197,24,0.22);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.35s cubic-bezier(.22,.68,0,1.4), box-shadow 0.35s, border-color 0.25s, z-index 0s;
+  transform-origin: bottom center;
+  margin-left: -28px;
+  flex-shrink: 0;
+  box-shadow: 2px 4px 18px rgba(0,0,0,0.7), inset 0 1px 0 rgba(245,197,24,0.08);
+  overflow: hidden;
+}
+.ace-card:first-child { margin-left: 0; }
+
+/* Card inner border decoration */
+.ace-card::before {
+  content: '';
+  position: absolute; inset: 5px;
+  border: 1px solid rgba(245,197,24,0.1);
+  border-radius: 6px;
+  pointer-events: none;
+}
+/* Gold shimmer line on hover */
+.ace-card::after {
+  content: '';
+  position: absolute; top: 0; left: -100%;
+  width: 60%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(245,197,24,0.07), transparent);
+  transition: left 0.5s;
+  pointer-events: none;
+}
+.ace-card:hover::after { left: 140%; }
+
+.ace-card:hover {
+  transform: translateY(-52px) rotate(-2deg) scale(1.05);
+  border-color: rgba(245,197,24,0.7);
+  box-shadow: 0 20px 50px rgba(245,197,24,0.25), 0 0 0 1px rgba(245,197,24,0.3), inset 0 1px 0 rgba(245,197,24,0.2);
+  z-index: 50;
+}
+
+/* Card top-left pip */
+.card-pip-tl {
+  position: absolute; top: 10px; left: 11px;
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem; color: var(--gold-dim);
+  line-height: 1.2; letter-spacing: 0.05em;
+}
+.card-pip-tl .pip-suit {
+  font-size: 0.85rem; display: block; color: var(--gold);
+  filter: drop-shadow(0 0 4px rgba(245,197,24,0.6));
+}
+/* Card bottom-right pip (rotated) */
+.card-pip-br {
+  position: absolute; bottom: 10px; right: 11px;
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem; color: var(--gold-dim);
+  line-height: 1.2; letter-spacing: 0.05em;
+  transform: rotate(180deg);
+  text-align: center;
+}
+.card-pip-br .pip-suit {
+  font-size: 0.85rem; display: block; color: var(--gold);
+  filter: drop-shadow(0 0 4px rgba(245,197,24,0.6));
+}
+
+/* Center suit */
+.card-center-suit {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -58%);
+  font-size: 3.2rem;
+  color: var(--gold);
+  filter: drop-shadow(0 0 14px rgba(245,197,24,0.5));
+  line-height: 1;
+  pointer-events: none;
+}
+
+/* Repo name on card face */
+.card-repo-name {
+  position: absolute;
+  bottom: 32px; left: 0; right: 0;
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  font-size: 0.58rem; letter-spacing: 0.1em;
+  color: var(--text);
+  padding: 0 8px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.card-repo-stars {
+  position: absolute;
+  bottom: 18px; left: 0; right: 0;
+  text-align: center;
+  font-size: 0.6rem; color: var(--gold-dim);
+  font-family: 'Rajdhani', sans-serif;
+}
+
+/* Language badge */
+.card-lang-badge {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, 28px);
+  font-size: 0.5rem; letter-spacing: 0.15em;
+  font-family: 'Cinzel', serif;
+  color: var(--muted); text-transform: uppercase;
+}
+
+/* Card back pattern (for overflow cards) */
+.card-back {
+  position: absolute; inset: 0;
+  background:
+    repeating-linear-gradient(45deg, rgba(245,197,24,0.03) 0px, rgba(245,197,24,0.03) 1px, transparent 1px, transparent 8px),
+    repeating-linear-gradient(-45deg, rgba(245,197,24,0.03) 0px, rgba(245,197,24,0.03) 1px, transparent 1px, transparent 8px);
+  border-radius: 9px;
+}
+
+/* ─── CARD DETAIL PANEL ─── */
+#card-detail {
+  position: sticky;
+  top: 100px;
+}
+.card-detail-inner {
+  background: linear-gradient(160deg, #0f0d06, #0a0804);
+  border: 1px solid rgba(245,197,24,0.25);
+  border-radius: 12px;
+  padding: 36px 28px;
+  position: relative;
+  overflow: hidden;
+  min-height: 320px;
+  display: flex; flex-direction: column; justify-content: space-between;
+  box-shadow: 0 0 40px rgba(245,197,24,0.08), inset 0 1px 0 rgba(245,197,24,0.12);
+}
+.card-detail-inner::before {
+  content: '';
+  position: absolute; inset: 8px;
+  border: 1px solid rgba(245,197,24,0.08);
+  border-radius: 6px; pointer-events: none;
+}
+.card-detail-inner::after {
+  content: '';
+  position: absolute; top: -40%; right: -20%;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(245,197,24,0.05), transparent 70%);
+  pointer-events: none;
+}
+.cd-suit {
+  font-size: 2.4rem; color: var(--gold);
+  filter: drop-shadow(0 0 12px rgba(245,197,24,0.5));
+  margin-bottom: 16px;
+}
+.cd-title {
+  font-family: 'Cinzel', serif;
+  font-size: 1.15rem; color: var(--gold);
+  letter-spacing: 0.08em;
+  margin-bottom: 12px;
+  text-shadow: 0 0 20px rgba(245,197,24,0.3);
+}
+.cd-desc {
+  font-size: 0.85rem; color: var(--muted);
+  line-height: 1.7; flex: 1;
+  font-family: 'Rajdhani', sans-serif;
+  margin-bottom: 16px;
+}
+.cd-meta {
+  display: flex; flex-wrap: wrap; gap: 12px;
+  margin-bottom: 20px;
+  font-size: 0.78rem; font-family: 'Rajdhani', sans-serif;
+}
+.cd-meta-pill {
+  background: rgba(245,197,24,0.07);
+  border: 1px solid rgba(245,197,24,0.15);
+  padding: 4px 10px; border-radius: 2px;
+  color: var(--gold-dim); letter-spacing: 0.1em;
+  display: flex; align-items: center; gap: 5px;
+}
+.cd-link {
+  display: inline-block;
+  font-family: 'Cinzel', serif;
+  font-size: 0.7rem; letter-spacing: 0.2em;
+  color: var(--gold); text-decoration: none;
+  border: 1px solid rgba(245,197,24,0.35);
+  padding: 9px 20px;
+  text-transform: uppercase;
+  transition: all 0.3s;
+  align-self: flex-start;
+}
+.cd-link:hover { background: rgba(245,197,24,0.08); border-color: var(--gold); }
+
+/* remove old grid styles no longer used */
+.projects-grid { display: none; }
+.repo-card { display: none; }
+
 /* ─── VIDEOS ─── */
 #videos {
   position: relative; z-index: 1;
@@ -715,8 +942,19 @@ footer {
     </div>
     <a href="https://github.com/Atlas-BES" target="_blank" class="btn-ghost" style="font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.2em;padding:10px 24px;border:1px solid var(--border);color:var(--gold-dim);text-decoration:none;text-transform:uppercase;transition:all 0.3s;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--gold-dim)'">View All ↗</a>
   </div>
-  <div class="projects-grid" id="reposGrid">
-    <div class="loading-repos">♟ Loading repositories from GitHub...</div>
+  <div id="card-deck-wrap">
+    <div id="card-deck" class="reveal">
+      <div class="deck-loading">♟ Loading repositories...</div>
+    </div>
+    <div id="card-detail" class="reveal">
+      <div class="card-detail-inner">
+        <div class="cd-suit">♠</div>
+        <div class="cd-title" id="cd-title">Select a card</div>
+        <div class="cd-desc" id="cd-desc">Hover a repository card to see its details here.</div>
+        <div class="cd-meta" id="cd-meta"></div>
+        <a class="cd-link" id="cd-link" href="#" target="_blank">View Repository ↗</a>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -1469,7 +1707,11 @@ scene.fog=new THREE.FogExp2(0x050505,0.038);
 scoreWhite=0; scoreBlack=0;
 initGame();
 
-/* ── GITHUB DATA ── */
+/* ── GITHUB DATA — ACE CARDS ── */
+const SUITS = ['♠','♣','♦','♥','♠','♣','♦','♥','♠','♣','♦','♥'];
+const SUIT_COLORS = {'♠':'#f5c518','♣':'#c9a227','♦':'#e8c84a','♥':'#d4a820'};
+const LANG_COLORS = {JavaScript:'#f1e05a',Python:'#3572A5',HTML:'#e34c26',CSS:'#563d7c',TypeScript:'#3178c6',Shell:'#89e051',Jupyter:'#DA5B0B',Ruby:'#cc342d',Go:'#00ADD8',Rust:'#dea584',C:'#555599','C++':'#f34b7d'};
+
 async function loadGitHub(){
   try{
     const [uR,rR]=await Promise.all([
@@ -1487,25 +1729,73 @@ async function loadGitHub(){
       if(Array.isArray(ev)) ev.forEach(e=>{if(e.type==='PushEvent') commits+=e.payload?.size||0;});
     }catch(e){}
     document.getElementById('stat-commits').textContent=commits||'—';
-    const grid=document.getElementById('reposGrid');
-    if(!Array.isArray(repos)||!repos.length){grid.innerHTML='<div class="loading-repos">No repos found.</div>';return;}
-    const lc={JavaScript:'#f1e05a',Python:'#3572A5',HTML:'#e34c26',CSS:'#563d7c',TypeScript:'#3178c6',Shell:'#89e051'};
-    grid.innerHTML=repos.map(r=>`
-      <div class="repo-card reveal" onclick="window.open('${r.html_url}','_blank')">
-        <div class="repo-icon">♟</div>
-        <div class="repo-name">${r.name}</div>
-        <div class="repo-desc">${r.description||'No description provided.'}</div>
-        <div class="repo-meta">
-          ${r.language?`<span><span class="lang-dot" style="background:${lc[r.language]||'#f5c518'}"></span>${r.language}</span>`:''}
-          <span>★ ${r.stargazers_count}</span><span>⑂ ${r.forks_count}</span>
-        </div>
-      </div>`).join('');
+
+    const deck=document.getElementById('card-deck');
+    if(!Array.isArray(repos)||!repos.length){
+      deck.innerHTML='<div class="deck-loading">No repositories found.</div>'; return;
+    }
+
+    deck.innerHTML=repos.map((r,i)=>{
+      const suit=SUITS[i%SUITS.length];
+      const suitColor=SUIT_COLORS[suit];
+      const langColor=LANG_COLORS[r.language]||'#888';
+      const shortName=r.name.length>12?r.name.substring(0,12)+'…':r.name;
+      const rank=i===0?'A':i===1?'2':i===2?'3':i===3?'4':i===4?'5':i===5?'6':i===6?'7':i===7?'8':i===8?'9':i===9?'10':i===10?'J':'Q';
+      return `
+        <div class="ace-card reveal"
+          data-name="${r.name}"
+          data-desc="${(r.description||'No description provided.').replace(/"/g,'&quot;')}"
+          data-stars="${r.stargazers_count}"
+          data-forks="${r.forks_count}"
+          data-lang="${r.language||''}"
+          data-langcolor="${langColor}"
+          data-url="${r.html_url}"
+          data-suit="${suit}"
+          onmouseenter="showCardDetail(this)"
+          onclick="window.open('${r.html_url}','_blank')"
+          style="--suit-color:${suitColor}">
+          <div class="card-back"></div>
+          <div class="card-pip-tl">
+            ${rank}<span class="pip-suit" style="color:${suitColor}">${suit}</span>
+          </div>
+          <div class="card-center-suit" style="color:${suitColor};filter:drop-shadow(0 0 14px ${suitColor}88)">${suit}</div>
+          <div class="card-pip-br">
+            ${rank}<span class="pip-suit" style="color:${suitColor}">${suit}</span>
+          </div>
+          <div class="card-repo-name">${shortName}</div>
+          ${r.language?`<div class="card-lang-badge" style="color:${langColor}">${r.language}</div>`:''}
+          <div class="card-repo-stars">${r.stargazers_count>0?'★'.repeat(Math.min(r.stargazers_count,5)):''}</div>
+        </div>`;
+    }).join('');
+
+    // Show first card detail by default
+    const first=deck.querySelector('.ace-card');
+    if(first) showCardDetail(first);
+
     observeReveal();
   }catch(e){
-    document.getElementById('reposGrid').innerHTML=`<div class="loading-repos"><div style="margin-bottom:12px">♟ Live data needs direct API access.</div><a href="https://github.com/Atlas-BES" target="_blank" style="color:var(--gold);font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.2em;">View on GitHub →</a></div>`;
-    document.getElementById('stat-repos').textContent='1';
-    ['stat-commits','stat-stars','stat-followers'].forEach(id=>document.getElementById(id).textContent='—');
+    document.getElementById('card-deck').innerHTML=`
+      <div class="deck-loading">
+        <div style="margin-bottom:12px">♟ Live data needs direct API access.</div>
+        <a href="https://github.com/Atlas-BES" target="_blank" style="color:var(--gold);font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.2em;">View on GitHub →</a>
+      </div>`;
+    ['stat-repos','stat-commits','stat-stars','stat-followers'].forEach(id=>document.getElementById(id).textContent='—');
   }
+}
+
+function showCardDetail(card){
+  document.getElementById('cd-title').textContent=card.dataset.name;
+  document.getElementById('cd-desc').textContent=card.dataset.desc;
+  document.getElementById('cd-link').href=card.dataset.url;
+  document.querySelector('.cd-suit').textContent=card.dataset.suit;
+  document.querySelector('.cd-suit').style.color=card.style.getPropertyValue('--suit-color')||'var(--gold)';
+  const meta=document.getElementById('cd-meta');
+  const langPill=card.dataset.lang?`<span class="cd-meta-pill"><span style="width:8px;height:8px;border-radius:50%;background:${card.dataset.langcolor};display:inline-block"></span>${card.dataset.lang}</span>`:'';
+  meta.innerHTML=`
+    ${langPill}
+    <span class="cd-meta-pill">★ ${card.dataset.stars} stars</span>
+    <span class="cd-meta-pill">⑂ ${card.dataset.forks} forks</span>
+  `;
 }
 
 /* ── YOUTUBE ── */
@@ -1540,4 +1830,3 @@ function observeReveal(){
 observeReveal(); loadGitHub(); loadYouTube();
 </script>
 </body>
-</html>
