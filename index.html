@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Atlas — Tech Extremist</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
 :root {
   --gold: #f5c518;
@@ -26,9 +27,11 @@ html { scroll-behavior: smooth; }
 body {
   background: var(--black);
   color: var(--text);
-  font-family: 'Rajdhani', sans-serif;
+  font-family: 'Press Start 2P', monospace;
   overflow-x: hidden;
   cursor: none;
+  -webkit-font-smoothing: none;
+  image-rendering: pixelated;
 }
 
 /* ─── CUSTOM CURSOR ─── */
@@ -66,15 +69,15 @@ nav {
   border-bottom: 1px solid var(--border);
 }
 .nav-logo {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 1.4rem; color: var(--gold);
-  letter-spacing: 0.2em;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.42rem; color: var(--gold);
+  letter-spacing: 0.04em;
   text-shadow: 0 0 20px var(--gold-glow);
 }
 .nav-links { display: flex; gap: 36px; }
 .nav-links a {
-  font-family: 'Cinzel', serif;
-  font-size: 0.75rem; letter-spacing: 0.2em;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.28rem; letter-spacing: 0.04em;
   color: var(--muted); text-decoration: none;
   text-transform: uppercase;
   transition: color 0.3s;
@@ -91,25 +94,25 @@ nav {
   padding: 120px 24px 60px;
 }
 .hero-eyebrow {
-  font-family: 'Cinzel', serif;
-  font-size: 0.7rem; letter-spacing: 0.5em;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.28rem; letter-spacing: 0.05em;
   color: var(--gold-dim); text-transform: uppercase;
   margin-bottom: 24px;
   animation: fadeUp 1s ease both;
 }
 .hero-name {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: clamp(3.5rem, 10vw, 8rem);
-  font-weight: 900; line-height: 0.9;
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(1.6rem, 4vw, 3.2rem);
+  font-weight: 900; line-height: 1.4;
   color: var(--gold);
   text-shadow: 0 0 40px rgba(245,197,24,0.4), 0 0 80px rgba(245,197,24,0.1);
   animation: fadeUp 1s 0.2s ease both;
-  letter-spacing: -0.02em;
+  letter-spacing: 0.02em;
 }
 .hero-sub {
-  font-family: 'Cinzel', serif;
-  font-size: clamp(0.9rem, 2vw, 1.3rem);
-  color: var(--muted); letter-spacing: 0.3em;
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(0.5rem, 1.2vw, 0.75rem);
+  color: var(--muted); letter-spacing: 0.05em;
   margin-top: 20px; text-transform: uppercase;
   animation: fadeUp 1s 0.4s ease both;
 }
@@ -147,8 +150,8 @@ nav {
 }
 .hero-bio {
   margin-top: 32px;
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 1.1rem; letter-spacing: 0.1em;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.38rem; letter-spacing: 0.03em;
   color: var(--text); font-weight: 300;
   animation: fadeUp 1s 0.8s ease both;
   max-width: 400px;
@@ -157,7 +160,7 @@ nav {
   margin-top: 60px;
   display: flex; flex-direction: column; align-items: center; gap: 8px;
   animation: fadeUp 1s 1s ease both;
-  color: var(--muted); font-size: 0.7rem; letter-spacing: 0.3em;
+  color: var(--muted); font-size: 0.28rem; letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 .scroll-line {
@@ -173,14 +176,14 @@ nav {
   display: flex; flex-direction: column; align-items: center;
 }
 .section-label {
-  font-family: 'Cinzel', serif;
-  font-size: 0.65rem; letter-spacing: 0.6em;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.42rem; letter-spacing: 0.05em;
   color: var(--gold-dim); text-transform: uppercase;
   margin-bottom: 12px;
 }
 .section-title {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: clamp(1.6rem, 4vw, 3rem);
+  font-family: 'Press Start 2P', monospace;
+  font-size: clamp(0.9rem, 2.5vw, 1.6rem);
   color: var(--gold);
   text-shadow: 0 0 30px var(--gold-glow);
   margin-bottom: 48px;
@@ -215,7 +218,7 @@ nav {
   background: linear-gradient(90deg, transparent, var(--gold), transparent);
 }
 .panel-title {
-  font-family:'Cinzel', serif; font-size:0.65rem; letter-spacing:0.3em;
+  font-family:'Press Start 2P', monospace; font-size:0.38rem; letter-spacing: 0.05em;
   color:var(--gold-dim); text-transform:uppercase; margin-bottom:14px;
 }
 .score-row {
@@ -223,20 +226,20 @@ nav {
   margin-bottom:10px;
 }
 .score-name {
-  font-family:'Cinzel',serif; font-size:0.8rem; color:var(--text);
+  font-family:'Press Start 2P', monospace; font-size:0.45rem; color:var(--text);
 }
 .score-val {
-  font-family:'Cinzel Decorative',serif; font-size:1.6rem; color:var(--gold);
+  font-family:'Press Start 2P', monospace; font-size:0.75rem; color:var(--gold);
   text-shadow:0 0 15px var(--gold-glow);
 }
 .score-divider { height:1px; background:var(--border); margin:10px 0; }
 
 #game-status {
-  font-family:'Cinzel',serif; font-size:0.75rem; letter-spacing:0.1em;
+  font-family:'Press Start 2P', monospace; font-size:0.42rem; letter-spacing: 0.03em;
   color:var(--gold); text-align:center; padding:10px;
   border:1px solid var(--border); background:rgba(245,197,24,0.04);
   min-height:42px; display:flex; align-items:center; justify-content:center;
-  line-height:1.5;
+  line-height:2.0;
 }
 #game-status.check { color:#ff6b35; border-color:rgba(255,107,53,0.4); animation: pulseStatus 0.5s ease 3; }
 #game-status.win   { color:#4cff72; border-color:rgba(76,255,114,0.4); }
@@ -247,7 +250,7 @@ nav {
 
 .turn-indicator {
   display:flex; align-items:center; gap:8px;
-  font-family:'Cinzel',serif; font-size:0.7rem; color:var(--muted);
+  font-family:'Press Start 2P', monospace; font-size:0.42rem; color:var(--muted);
 }
 .turn-dot {
   width:10px; height:10px; border-radius:50%;
@@ -261,21 +264,21 @@ nav {
 /* ─── MOVE HISTORY ─── */
 #move-list {
   max-height:240px; overflow-y:auto;
-  font-family:'Rajdhani',sans-serif; font-size:0.78rem;
-  color:var(--muted); line-height:1.8;
+  font-family:'Press Start 2P', monospace; font-size:0.78rem;
+  color:var(--muted); line-height:2.0;
   scrollbar-width:thin; scrollbar-color:var(--gold-dim) transparent;
 }
 #move-list::-webkit-scrollbar{width:3px;}
 #move-list::-webkit-scrollbar-thumb{background:var(--gold-dim);}
 .move-row { display:grid; grid-template-columns:24px 1fr 1fr; gap:4px; padding:2px 0; }
-.move-num { color:var(--gold-dim); font-size:0.7rem; }
+.move-num { color:var(--gold-dim); font-size:0.42rem; }
 .move-w, .move-b { cursor:default; }
 .move-w:hover, .move-b:hover { color:var(--gold); }
 
 /* ─── CAPTURED PIECES ─── */
 .captured-pieces {
   display:flex; flex-wrap:wrap; gap:2px; min-height:24px;
-  font-size:1rem; line-height:1;
+  font-size:0.3rem; line-height:1;
 }
 .cap-piece { opacity:0.7; filter:drop-shadow(0 0 3px rgba(245,197,24,0.5)); }
 
@@ -292,7 +295,7 @@ nav {
   box-shadow:0 0 60px rgba(245,197,24,0.3);
 }
 .promo-title {
-  font-family:'Cinzel',serif; font-size:0.9rem; letter-spacing:0.2em;
+  font-family:'Press Start 2P', monospace; font-size:0.28rem; letter-spacing: 0.04em;
   color:var(--gold); margin-bottom:20px; text-transform:uppercase;
 }
 .promo-choices { display:flex; gap:16px; justify-content:center; }
@@ -325,7 +328,7 @@ nav {
   display: flex; gap: 12px; margin-top: 16px; flex-wrap:wrap; justify-content:center;
 }
 .btn-ghost {
-  font-family: 'Cinzel', serif; font-size: 0.68rem; letter-spacing: 0.15em;
+  font-family: 'Press Start 2P', monospace; font-size: 0.42rem; letter-spacing: 0.03em;
   padding: 9px 20px; border: 1px solid var(--border);
   background: transparent; color: var(--gold-dim); cursor: pointer;
   text-transform: uppercase; transition: all 0.3s;
@@ -382,25 +385,25 @@ nav {
   opacity: 0.4;
 }
 .stat-num {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 3rem; color: var(--gold);
-  line-height: 1;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 1.4rem; color: var(--gold);
+  line-height: 2.0;
   text-shadow: 0 0 30px var(--gold-glow), 0 0 60px rgba(245,197,24,0.1);
   position: relative; z-index: 1;
 }
 .stat-label {
-  font-family: 'Cinzel', serif; font-size: 0.62rem;
-  letter-spacing: 0.35em; color: var(--muted);
+  font-family: 'Press Start 2P', monospace; font-size: 0.4rem;
+  letter-spacing: 0.05em; color: var(--muted);
   text-transform: uppercase;
   position: relative; z-index: 1;
 }
 .stat-face-icon {
-  font-size: 1.6rem; opacity: 0.15;
+  font-size: 0.8rem; opacity: 0.15;
   position: absolute; bottom: 14px; right: 16px;
 }
 .stat-hint {
-  font-family: 'Cinzel', serif; font-size: 0.5rem;
-  letter-spacing: 0.25em; color: var(--muted);
+  font-family: 'Press Start 2P', monospace; font-size: 0.32rem;
+  letter-spacing: 0.04em; color: var(--muted);
   text-transform: uppercase; opacity: 0.5;
   position: absolute; bottom: 10px; left: 0; right: 0;
   text-align: center;
@@ -420,13 +423,13 @@ nav {
   flex-shrink: 0;
 }
 .stat-back-label {
-  font-family: 'Cinzel', serif; font-size: 0.55rem;
-  letter-spacing: 0.3em; color: var(--gold-dim);
+  font-family: 'Press Start 2P', monospace; font-size: 0.34rem;
+  letter-spacing: 0.05em; color: var(--gold-dim);
   text-transform: uppercase;
 }
 .stat-back-num {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 0.95rem; color: var(--gold);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.52rem; color: var(--gold);
   text-shadow: 0 0 10px var(--gold-glow);
 }
 .stat-pieces-grid {
@@ -441,13 +444,13 @@ nav {
   font-size: 1.05rem;
   color: var(--gold);
   filter: drop-shadow(0 0 3px rgba(245,197,24,0.55));
-  line-height: 1;
+  line-height: 2.0;
   display: flex; align-items: center; justify-content: center;
   width: 22px; height: 22px;
   animation: piecePop 0.3s ease both;
 }
 .stat-piece.overflow-piece {
-  font-size: 0.7rem;
+  font-size: 0.28rem;
   opacity: 0.5;
   width: 14px; height: 14px;
 }
@@ -458,8 +461,8 @@ nav {
 .stat-back-footer {
   padding: 6px 10px;
   border-top: 1px solid rgba(245,197,24,0.08);
-  font-size: 0.5rem; color: var(--muted);
-  font-family: 'Cinzel', serif; letter-spacing: 0.15em;
+  font-size: 0.32rem; color: var(--muted);
+  font-family: 'Press Start 2P', monospace; letter-spacing: 0.03em;
   text-align: center; flex-shrink: 0;
 }
 
@@ -495,20 +498,20 @@ nav {
 }
 .repo-card:hover { border-color: rgba(245,197,24,0.35); transform: translateY(-4px); }
 .repo-card:hover::after { transform: scaleX(1); }
-.repo-icon { font-size: 1.4rem; margin-bottom: 12px; }
+.repo-icon { font-size: 0.42rem; margin-bottom: 12px; }
 .repo-name {
-  font-family: 'Cinzel', serif; font-size: 0.95rem;
+  font-family: 'Press Start 2P', monospace; font-size: 0.52rem;
   color: var(--gold); margin-bottom: 8px;
   letter-spacing: 0.05em;
 }
 .repo-desc {
-  font-size: 0.85rem; color: var(--muted);
-  line-height: 1.6; margin-bottom: 16px;
+  font-size: 0.30rem; color: var(--muted);
+  line-height: 1.9; margin-bottom: 16px;
   min-height: 40px;
 }
 .repo-meta {
   display: flex; gap: 16px;
-  font-size: 0.75rem; color: var(--muted);
+  font-size: 0.28rem; color: var(--muted);
 }
 .repo-meta span { display: flex; align-items: center; gap: 4px; }
 .lang-dot {
@@ -518,8 +521,8 @@ nav {
 .loading-repos {
   grid-column: 1/-1;
   text-align: center; padding: 60px;
-  color: var(--muted); font-family: 'Cinzel', serif;
-  letter-spacing: 0.2em; font-size: 0.8rem;
+  color: var(--muted); font-family: 'Press Start 2P', monospace;
+  letter-spacing: 0.04em; font-size: 0.30rem;
 }
 
 /* ─── ACE CARD DECK ─── */
@@ -550,8 +553,8 @@ nav {
   padding: 60px 0 20px 20px;
 }
 .deck-loading {
-  color: var(--muted); font-family:'Cinzel',serif;
-  font-size:0.8rem; letter-spacing:0.2em; padding:60px;
+  color: var(--muted); font-family:'Press Start 2P', monospace;
+  font-size:0.45rem; letter-spacing: 0.04em; padding:60px;
 }
 
 /* Individual ace card */
@@ -601,25 +604,25 @@ nav {
 /* Card top-left pip */
 .card-pip-tl {
   position: absolute; top: 10px; left: 11px;
-  font-family: 'Cinzel', serif;
-  font-size: 0.65rem; color: var(--gold-dim);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.42rem; color: var(--gold-dim);
   line-height: 1.2; letter-spacing: 0.05em;
 }
 .card-pip-tl .pip-suit {
-  font-size: 0.85rem; display: block; color: var(--gold);
+  font-size: 0.30rem; display: block; color: var(--gold);
   filter: drop-shadow(0 0 4px rgba(245,197,24,0.6));
 }
 /* Card bottom-right pip (rotated) */
 .card-pip-br {
   position: absolute; bottom: 10px; right: 11px;
-  font-family: 'Cinzel', serif;
-  font-size: 0.65rem; color: var(--gold-dim);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.42rem; color: var(--gold-dim);
   line-height: 1.2; letter-spacing: 0.05em;
   transform: rotate(180deg);
   text-align: center;
 }
 .card-pip-br .pip-suit {
-  font-size: 0.85rem; display: block; color: var(--gold);
+  font-size: 0.30rem; display: block; color: var(--gold);
   filter: drop-shadow(0 0 4px rgba(245,197,24,0.6));
 }
 
@@ -631,7 +634,7 @@ nav {
   font-size: 3.2rem;
   color: var(--gold);
   filter: drop-shadow(0 0 14px rgba(245,197,24,0.5));
-  line-height: 1;
+  line-height: 2.0;
   pointer-events: none;
 }
 
@@ -640,8 +643,8 @@ nav {
   position: absolute;
   bottom: 32px; left: 0; right: 0;
   text-align: center;
-  font-family: 'Cinzel', serif;
-  font-size: 0.58rem; letter-spacing: 0.1em;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.36rem; letter-spacing: 0.03em;
   color: var(--text);
   padding: 0 8px;
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
@@ -650,8 +653,8 @@ nav {
   position: absolute;
   bottom: 18px; left: 0; right: 0;
   text-align: center;
-  font-size: 0.6rem; color: var(--gold-dim);
-  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.38rem; color: var(--gold-dim);
+  font-family: 'Press Start 2P', monospace;
 }
 
 /* Language badge */
@@ -659,8 +662,8 @@ nav {
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, 28px);
-  font-size: 0.5rem; letter-spacing: 0.15em;
-  font-family: 'Cinzel', serif;
+  font-size: 0.32rem; letter-spacing: 0.03em;
+  font-family: 'Press Start 2P', monospace;
   color: var(--muted); text-transform: uppercase;
 }
 
@@ -703,39 +706,39 @@ nav {
   pointer-events: none;
 }
 .cd-suit {
-  font-size: 2.4rem; color: var(--gold);
+  font-size: 1.1rem; color: var(--gold);
   filter: drop-shadow(0 0 12px rgba(245,197,24,0.5));
   margin-bottom: 16px;
 }
 .cd-title {
-  font-family: 'Cinzel', serif;
-  font-size: 1.15rem; color: var(--gold);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.38rem; color: var(--gold);
   letter-spacing: 0.08em;
   margin-bottom: 12px;
   text-shadow: 0 0 20px rgba(245,197,24,0.3);
 }
 .cd-desc {
-  font-size: 0.85rem; color: var(--muted);
-  line-height: 1.7; flex: 1;
-  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.30rem; color: var(--muted);
+  line-height: 2.0; flex: 1;
+  font-family: 'Press Start 2P', monospace;
   margin-bottom: 16px;
 }
 .cd-meta {
   display: flex; flex-wrap: wrap; gap: 12px;
   margin-bottom: 20px;
-  font-size: 0.78rem; font-family: 'Rajdhani', sans-serif;
+  font-size: 0.28rem; font-family: 'Press Start 2P', monospace;
 }
 .cd-meta-pill {
   background: rgba(245,197,24,0.07);
   border: 1px solid rgba(245,197,24,0.15);
   padding: 4px 10px; border-radius: 2px;
-  color: var(--gold-dim); letter-spacing: 0.1em;
+  color: var(--gold-dim); letter-spacing: 0.03em;
   display: flex; align-items: center; gap: 5px;
 }
 .cd-link {
   display: inline-block;
-  font-family: 'Cinzel', serif;
-  font-size: 0.7rem; letter-spacing: 0.2em;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.28rem; letter-spacing: 0.04em;
   color: var(--gold); text-decoration: none;
   border: 1px solid rgba(245,197,24,0.35);
   padding: 9px 20px;
@@ -797,17 +800,17 @@ nav {
 .video-card:hover .play-btn { transform: scale(1.12); background: var(--gold); }
 .video-info { padding: 16px; }
 .video-title {
-  font-family: 'Cinzel', serif; font-size: 0.8rem;
-  color: var(--text); line-height: 1.5;
+  font-family: 'Press Start 2P', monospace; font-size: 0.30rem;
+  color: var(--text); line-height: 2.0;
   margin-bottom: 6px;
   display: -webkit-box; -webkit-line-clamp: 2;
   -webkit-box-orient: vertical; overflow: hidden;
 }
-.video-date { font-size: 0.72rem; color: var(--muted); }
+.video-date { font-size: 0.28rem; color: var(--muted); }
 .yt-badge {
   display: inline-flex; align-items: center; gap: 6px;
-  font-family: 'Cinzel', serif; font-size: 0.65rem;
-  letter-spacing: 0.15em; color: var(--gold-dim);
+  font-family: 'Press Start 2P', monospace; font-size: 0.42rem;
+  letter-spacing: 0.03em; color: var(--gold-dim);
   margin-bottom: 32px;
 }
 .yt-icon { width: 18px; fill: #ff0000; }
@@ -821,20 +824,20 @@ footer {
   flex-wrap: wrap; gap: 16px;
 }
 .footer-logo {
-  font-family: 'Cinzel Decorative', serif;
-  font-size: 1.1rem; color: var(--gold-dim);
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.38rem; color: var(--gold-dim);
 }
 .footer-links { display: flex; gap: 24px; }
 .footer-links a {
   color: var(--muted); text-decoration: none;
-  font-size: 0.75rem; letter-spacing: 0.15em;
-  font-family: 'Cinzel', serif;
+  font-size: 0.28rem; letter-spacing: 0.03em;
+  font-family: 'Press Start 2P', monospace;
   transition: color 0.3s;
 }
 .footer-links a:hover { color: var(--gold); }
 .footer-copy {
-  color: var(--muted); font-size: 0.7rem;
-  letter-spacing: 0.1em;
+  color: var(--muted); font-size: 0.28rem;
+  letter-spacing: 0.03em;
 }
 
 /* ─── DIVIDER ─── */
@@ -974,7 +977,7 @@ footer {
       </div>
       <div class="panel-box">
         <div class="panel-title">Game Info</div>
-        <div style="font-size:0.75rem;color:var(--muted);line-height:1.9;font-family:'Rajdhani',sans-serif;">
+        <div style="font-size:0.42rem;color:var(--muted);line-height:1.9;font-family:'Press Start 2P', monospace;">
           <div>Click a piece to select</div>
           <div>Click a highlight to move</div>
           <div style="margin-top:6px;color:var(--gold-dim);">Rules: Full standard chess</div>
@@ -1094,7 +1097,7 @@ footer {
       <div class="section-label">GitHub</div>
       <h2 class="section-title" style="margin-bottom:0">Live Repositories</h2>
     </div>
-    <a href="https://github.com/Atlas-BES" target="_blank" class="btn-ghost" style="font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:0.2em;padding:10px 24px;border:1px solid var(--border);color:var(--gold-dim);text-decoration:none;text-transform:uppercase;transition:all 0.3s;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--gold-dim)'">View All ↗</a>
+    <a href="https://github.com/Atlas-BES" target="_blank" class="btn-ghost" style="font-family:'Press Start 2P', monospace;font-size:0.42rem;letter-spacing: 0.04em;padding:10px 24px;border:1px solid var(--border);color:var(--gold-dim);text-decoration:none;text-transform:uppercase;transition:all 0.3s;" onmouseover="this.style.borderColor='var(--gold)';this.style.color='var(--gold)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--gold-dim)'">View All ↗</a>
   </div>
   <div id="card-deck-wrap">
     <div id="card-deck" class="reveal">
@@ -1985,7 +1988,7 @@ async function loadGitHub(){
     document.getElementById('card-deck').innerHTML=`
       <div class="deck-loading">
         <div style="margin-bottom:12px">♟ Live data needs direct API access.</div>
-        <a href="https://github.com/Atlas-BES" target="_blank" style="color:var(--gold);font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.2em;">View on GitHub →</a>
+        <a href="https://github.com/Atlas-BES" target="_blank" style="color:var(--gold);font-family:'Press Start 2P', monospace;font-size:0.42rem;letter-spacing: 0.04em;">View on GitHub →</a>
       </div>`;
     ['stat-repos','stat-commits','stat-stars','stat-followers'].forEach(id=>document.getElementById(id).textContent='—');
     ['stat-repos-back','stat-commits-back','stat-stars-back','stat-followers-back'].forEach(id=>document.getElementById(id).textContent='—');
@@ -2011,15 +2014,15 @@ function showCardDetail(card){
 async function loadYouTube(){
   document.getElementById('videosGrid').innerHTML=`
     <div style="grid-column:1/-1;text-align:center;padding:40px 20px;background:var(--panel);border:1px solid var(--border);">
-      <div style="font-family:'Cinzel',serif;font-size:1.1rem;color:var(--gold);margin-bottom:12px;letter-spacing:0.2em;">♟ @AtlasBES on YouTube</div>
-      <div style="color:var(--muted);font-size:0.85rem;margin-bottom:24px;line-height:1.8;">YouTube's API requires server-side authentication.<br>Visit the channel directly to watch all videos.</div>
-      <a href="https://www.youtube.com/@AtlasBES" target="_blank" style="display:inline-block;padding:12px 32px;border:1px solid var(--gold);color:var(--gold);text-decoration:none;font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:0.2em;text-transform:uppercase;" onmouseover="this.style.background='rgba(245,197,24,0.08)'" onmouseout="this.style.background='transparent'">▶ Visit Channel</a>
+      <div style="font-family:'Press Start 2P', monospace;font-size:0.34rem;color:var(--gold);margin-bottom:12px;letter-spacing: 0.04em;">♟ @AtlasBES on YouTube</div>
+      <div style="color:var(--muted);font-size:0.45rem;margin-bottom:24px;line-height:2.0;">YouTube's API requires server-side authentication.<br>Visit the channel directly to watch all videos.</div>
+      <a href="https://www.youtube.com/@AtlasBES" target="_blank" style="display:inline-block;padding:12px 32px;border:1px solid var(--gold);color:var(--gold);text-decoration:none;font-family:'Press Start 2P', monospace;font-size:0.42rem;letter-spacing: 0.04em;text-transform:uppercase;" onmouseover="this.style.background='rgba(245,197,24,0.08)'" onmouseout="this.style.background='transparent'">▶ Visit Channel</a>
     </div>
     <div class="video-card reveal" onclick="window.open('https://www.youtube.com/@AtlasBES','_blank')">
       <div style="background:linear-gradient(135deg,#0f0f0f,#1a1200);padding-top:56.25%;position:relative;overflow:hidden;">
         <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="#ff0000"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.5A3 3 0 0 0 .5 6.2C0 8.1 0 12 0 12s0 3.9.5 5.8a3 3 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3 3 0 0 0 2.1-2.1C24 15.9 24 12 24 12s0-3.9-.5-5.8z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="#fff"/></svg>
-          <div style="color:var(--gold);font-family:'Cinzel',serif;font-size:0.8rem;margin-top:12px;">@AtlasBES</div>
+          <div style="color:var(--gold);font-family:'Press Start 2P', monospace;font-size:0.45rem;margin-top:12px;">@AtlasBES</div>
         </div>
       </div>
       <div class="video-info"><div class="video-title">DIY Projects, Tech & Creative Design</div><div class="video-date">Subscribe for latest content →</div></div>
