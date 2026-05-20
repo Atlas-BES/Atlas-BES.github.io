@@ -179,24 +179,20 @@ nav {
   position: relative; width: 200px; height: 200px;
   animation: fadeUp 1s 0.6s ease both;
 }
-.avatar-ring {
-  position: absolute; inset: -8px;
-  border-radius: 50%;
-  background: conic-gradient(var(--gold), transparent, var(--gold-dim), transparent, var(--gold));
-  animation: spinRing 6s linear infinite;
-}
-.avatar-ring2 {
-  position: absolute; inset: -18px;
-  border-radius: 50%;
-  background: conic-gradient(transparent, var(--gold-dim), transparent);
-  animation: spinRing 10s linear infinite reverse;
-  opacity: 0.4;
+#swarm-canvas {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 360px; height: 360px;
+  pointer-events: none;
+  z-index: 1;
+  image-rendering: pixelated;
 }
 .hero-avatar {
   position: relative; z-index: 2;
   width: 200px; height: 200px; border-radius: 50%;
   object-fit: cover;
-  border: 2px solid rgba(79,195,247,0.3);
+  border: 2px solid rgba(79,195,247,0.4);
   filter: contrast(1.1) saturate(0.8);
   transition: transform 0.4s ease, filter 0.4s ease, box-shadow 0.4s ease;
   box-shadow: 0 0 40px rgba(79,195,247,0.25), 0 0 0 6px rgba(79,195,247,0.05);
@@ -921,9 +917,6 @@ footer {
   from { opacity:0; transform: translateY(30px); }
   to   { opacity:1; transform: translateY(0); }
 }
-@keyframes spinRing {
-  to { transform: rotate(360deg); }
-}
 @keyframes scrollPulse {
   0%,100% { opacity: 0.3; }
   50%      { opacity: 1; }
@@ -982,12 +975,11 @@ footer {
   <div class="hero-sub">Tech Extremist &nbsp;·&nbsp; Builder &nbsp;·&nbsp; Creator</div>
 
   <div class="hero-avatar-wrap">
-    <div class="avatar-ring2"></div>
-    <div class="avatar-ring"></div>
+    <canvas id="swarm-canvas" width="360" height="360"></canvas>
     <img class="hero-avatar"
       src="https://avatars.githubusercontent.com/u/180035744?v=4"
       alt="Atlas Profile"
-      onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><rect fill=%22%230f0f0f%22 width=%22200%22 height=%22200%22/><text x=%2250%%22 y=%2250%%22 font-size=%2280%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22>♚</text></svg>'">
+      onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22><rect fill=%22%23050d18%22 width=%22200%22 height=%22200%22/><text x=%2250%%22 y=%2250%%22 font-size=%2280%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22>♚</text></svg>'">
   </div>
   <div class="hero-bio">Tech Extremist, loves DIY projects and Creative design work.</div>
 
@@ -1277,6 +1269,104 @@ function animateBg(){
   requestAnimationFrame(animateBg);
 }
 animateBg();
+
+/* ══ AVATAR SWARM — 8-bit chess pieces orbiting profile pic ══ */
+(function initSwarm() {
+  const cv = document.getElementById('swarm-canvas');
+  if (!cv) return;
+  const cx = cv.getContext('2d');
+  const W = 360, H = 360, CX = W / 2, CY = H / 2;
+
+  // 8-bit pixel font chess pieces drawn as pixel art bitmaps (7×7 grids)
+  // Each entry: array of rows, each row is a bitmask (7 bits, MSB = left)
+  const PIXEL_PIECES = {
+    king:   [0b0001000,0b0011100,0b0001000,0b0111110,0b0111110,0b0111110,0b1111111],
+    queen:  [0b1010101,0b0111110,0b0111110,0b0011100,0b0111110,0b0111110,0b1111111],
+    rook:   [0b1010101,0b1111111,0b0111110,0b0111110,0b0111110,0b0111110,0b1111111],
+    bishop: [0b0001000,0b0011100,0b0011100,0b0111110,0b0011100,0b0111110,0b1111111],
+    knight: [0b0011100,0b0111110,0b1111100,0b0111110,0b0011100,0b0011100,0b0111110],
+    pawn:   [0b0001000,0b0011100,0b0011100,0b0001000,0b0011100,0b0011100,0b0111110],
+  };
+  const PIECE_KEYS = Object.keys(PIXEL_PIECES);
+
+  // Color palette — two blue shades + white for the pixel pieces
+  const COLORS = ['#4fc3f7','#81d4fa','#e1f5fe','#0288d1','#b3e5fc'];
+
+  // Build swarm particles — different orbital rings
+  const RINGS = [
+    { r: 118, count: 7,  speed: 0.008,  size: 3, dir:  1 },
+    { r: 138, count: 9,  speed: 0.006,  size: 2, dir: -1 },
+    { r: 155, count: 6,  speed: 0.011,  size: 3, dir:  1 },
+    { r: 168, count: 11, speed: 0.004,  size: 2, dir: -1 },
+  ];
+
+  const swarmPieces = [];
+  RINGS.forEach((ring, ri) => {
+    for (let i = 0; i < ring.count; i++) {
+      const baseAngle = (i / ring.count) * Math.PI * 2;
+      const key = PIECE_KEYS[(ri * 3 + i) % PIECE_KEYS.length];
+      swarmPieces.push({
+        angle:     baseAngle,
+        speed:     ring.speed * ring.dir * (0.85 + Math.random() * 0.3),
+        radius:    ring.r + (Math.random() - 0.5) * 8,
+        pixelSize: ring.size,
+        piece:     key,
+        bitmap:    PIXEL_PIECES[key],
+        color:     COLORS[(ri + i) % COLORS.length],
+        wobble:    Math.random() * Math.PI * 2,
+        wobbleSpd: 0.02 + Math.random() * 0.03,
+        pulse:     Math.random() * Math.PI * 2,
+        pulseSpd:  0.015 + Math.random() * 0.02,
+        alpha:     0.7 + Math.random() * 0.3,
+      });
+    }
+  });
+
+  function drawPixelPiece(cx, px, py, bitmap, pxSize, color, alpha) {
+    cx.globalAlpha = alpha;
+    cx.fillStyle = color;
+    // Glow
+    cx.shadowColor = color;
+    cx.shadowBlur = pxSize * 3;
+    const rows = bitmap.length;
+    const cols = 7;
+    const offX = px - (cols * pxSize) / 2;
+    const offY = py - (rows * pxSize) / 2;
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        if (bitmap[r] & (1 << (cols - 1 - c))) {
+          cx.fillRect(
+            Math.round(offX + c * pxSize),
+            Math.round(offY + r * pxSize),
+            pxSize, pxSize
+          );
+        }
+      }
+    }
+    cx.shadowBlur = 0;
+    cx.globalAlpha = 1;
+  }
+
+  function animateSwarm(t) {
+    cx.clearRect(0, 0, W, H);
+
+    swarmPieces.forEach(p => {
+      p.angle   += p.speed;
+      p.wobble  += p.wobbleSpd;
+      p.pulse   += p.pulseSpd;
+
+      const wobbleR = p.radius + Math.sin(p.wobble) * 5;
+      const px = CX + Math.cos(p.angle) * wobbleR;
+      const py = CY + Math.sin(p.angle) * wobbleR;
+      const alpha = p.alpha * (0.75 + 0.25 * Math.sin(p.pulse));
+
+      drawPixelPiece(cx, px, py, p.bitmap, p.pixelSize, p.color, alpha);
+    });
+
+    requestAnimationFrame(animateSwarm);
+  }
+  requestAnimationFrame(animateSwarm);
+})();
 
 /* ══════════════════════════════════════════════════
    CHESS ENGINE — full rules
