@@ -6,6 +6,10 @@
 <title>Atlas — Tech Extremist | Brown Roomy</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<meta name="description" content="Atlas — Tech Extremist. DIY builds, chess, GitHub work, videos.">
+<meta name="theme-color" content="#f4ede1">
+<link rel="dns-prefetch" href="https://api.github.com">
+<link rel="preconnect" href="https://avatars.githubusercontent.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -28,8 +32,8 @@ body{min-height:100vh;color:var(--ink);font-family:var(--fb);
     radial-gradient(900px 700px at 95% 12%, rgba(166,124,82,.28), transparent 60%),
     radial-gradient(1000px 700px at 50% 110%, rgba(111,78,55,.18), transparent 60%),
     linear-gradient(180deg,#faf5ea 0%,var(--bg) 45%,var(--bg2) 100%);
-  background-attachment:fixed;overflow-x:hidden;-webkit-font-smoothing:antialiased}
-.room-glow{position:fixed;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:0}
+  background-attachment:scroll;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.room-glow{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;z-index:0;contain:strict}
 .rg1{width:600px;height:600px;left:-160px;top:-140px;background:radial-gradient(circle,#e9d3ac,#c19a6b 60%,transparent 75%);opacity:.7}
 .rg2{width:560px;height:560px;right:-160px;top:8%;background:radial-gradient(circle,#f3e2c7,#a67c52 60%,transparent 75%);opacity:.55}
 .rg3{width:700px;height:420px;left:28%;bottom:-200px;background:radial-gradient(circle,#e5cfa8,#8b5e3c 70%,transparent 78%);opacity:.35}
@@ -202,6 +206,11 @@ footer a:hover{color:var(--bark)}
 #totop{position:fixed;right:20px;bottom:22px;z-index:90;width:52px;height:60px;border-radius:14px 14px 18px 18px;border:1px solid rgba(255,250,240,.5);background:linear-gradient(180deg,#8b5e3c,#6f4e37);color:#fffaf0;font-size:1.1rem;cursor:pointer;box-shadow:var(--shadow);clip-path:polygon(0 0,100% 0,100% 100%,50% 88%,0 100%);opacity:0;transform:translateY(12px);pointer-events:none;transition:.3s}
 #totop.show{opacity:1;transform:none;pointer-events:auto}
 .tilt{will-change:transform}
+/* ── PERF ── */
+.section,.pager,.page-rule,footer{content-visibility:auto;contain-intrinsic-size:auto 600px}
+#hero{content-visibility:visible}
+img{max-width:100%}
+@media(prefers-reduced-motion:reduce){.room-glow,#lamp,#chessCanvas{display:none}}
 .sq span{display:inline-block}
 .sq.pop span{animation:pop .32s ease}
 @keyframes pop{40%{transform:translateY(-9px) scale(1.14) rotate(-4deg)}}
@@ -252,7 +261,7 @@ footer a:hover{color:var(--bark)}
   </div>
   <div class="hero-room">
     <div class="avatar-card glass">
-      <img class="avatar" src="https://avatars.githubusercontent.com/u/180035744?v=4" alt="Atlas" onerror="this.style.display='none'">
+      <img class="avatar" src="https://avatars.githubusercontent.com/u/180035744?v=4" alt="Atlas" width="110" height="110" decoding="async" fetchpriority="high" onerror="this.style.display='none'">
       <div><b>Atlas</b><span>Tech Extremist · loves DIY & design</span><div style="margin-top:8px;font-size:.85rem;color:var(--bark);font-weight:600" id="hero-line">♟ Pulling live stats…</div></div>
     </div>
     <div class="mini-stats">
@@ -360,10 +369,10 @@ try{var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isI
 
 <script>
 /* background dust — decorative only, guarded */
-(function(){try{var cv=document.getElementById('chessCanvas'),cx=cv.getContext('2d');function rs(){cv.width=innerWidth;cv.height=innerHeight}rs();addEventListener('resize',rs);
-var P=['♔','♕','♖','♗','♘','♙'],ps=[];for(var i=0;i<36;i++)ps.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,s:16+Math.random()*44,a:.05+Math.random()*.14,r:Math.random()*360,rv:(Math.random()-.5)*.3,t:BPpick()});
-function BPpick(){return P[Math.floor(Math.random()*P.length)]}var vis=true;document.addEventListener('visibilitychange',function(){vis=!document.hidden});
-(function loop(){requestAnimationFrame(loop);if(!vis)return;cx.clearRect(0,0,cv.width,cv.height);cx.fillStyle='#6f4e37';cx.textAlign='center';cx.textBaseline='middle';for(var k=0;k<ps.length;k++){var p=ps[k];p.x+=p.vx;p.y+=p.vy;p.r+=p.rv;if(p.x<-60)p.x=cv.width+60;if(p.x>cv.width+60)p.x=-60;if(p.y<-60)p.y=cv.height+60;if(p.y>cv.height+60)p.y=-60;cx.save();cx.translate(p.x,p.y);cx.rotate(p.r*Math.PI/180);cx.globalAlpha=p.a;cx.font=p.s+'px serif';cx.fillText(p.t,0,0);cx.restore()}})();
+(function(){try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;var cv=document.getElementById('chessCanvas'),cx=cv.getContext('2d');function rs(){cv.width=innerWidth;cv.height=innerHeight}rs();var rT;addEventListener('resize',function(){clearTimeout(rT);rT=setTimeout(rs,200)});
+var P=['♔','♕','♖','♗','♘','♙'],ps=[];for(var i=0;i<(innerWidth<700?16:28);i++)ps.push({x:Math.random()*innerWidth,y:Math.random()*innerHeight,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,s:16+Math.random()*44,a:.05+Math.random()*.14,r:Math.random()*360,rv:(Math.random()-.5)*.3,t:BPpick()});
+function BPpick(){return P[Math.floor(Math.random()*P.length)]}var vis=true,last=0;document.addEventListener('visibilitychange',function(){vis=!document.hidden});
+(function loop(t){requestAnimationFrame(loop);if(!vis||!t||t-last<50)return;last=t;cx.clearRect(0,0,cv.width,cv.height);cx.fillStyle='#6f4e37';cx.textAlign='center';cx.textBaseline='middle';for(var k=0;k<ps.length;k++){var p=ps[k];p.x+=p.vx;p.y+=p.vy;p.r+=p.rv;if(p.x<-60)p.x=cv.width+60;if(p.x>cv.width+60)p.x=-60;if(p.y<-60)p.y=cv.height+60;if(p.y>cv.height+60)p.y=-60;cx.save();cx.translate(p.x,p.y);cx.rotate(p.r*Math.PI/180);cx.globalAlpha=p.a;cx.font=p.s+'px serif';cx.fillText(p.t,0,0);cx.restore()}})();
 }catch(e){}})();
 </script>
 
@@ -487,9 +496,9 @@ addEventListener('keydown',function(e){
 });
 var lamp=document.getElementById('lamp');
 if(lamp&&window.matchMedia&&matchMedia('(pointer:fine)').matches){
-  var tx=innerWidth/2,ty=200,x=tx,y=ty;
-  addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY},{passive:true});
-  (function f(){x+=(tx-x)*.08;y+=(ty-y)*.08;lamp.style.left=x+'px';lamp.style.top=y+'px';requestAnimationFrame(f)})();
+  var tx=innerWidth/2,ty=200,x=tx,y=ty,lastMv=0,idle=false;
+  (function f(){x+=(tx-x)*.08;y+=(ty-y)*.08;lamp.style.left=x+'px';lamp.style.top=y+'px';if(Math.abs(tx-x)+Math.abs(ty-y)>.5||Date.now()-lastMv<1500)requestAnimationFrame(f);else idle=true})();
+  addEventListener('mousemove',function(e){tx=e.clientX;ty=e.clientY;lastMv=Date.now();if(idle){idle=false;requestAnimationFrame(f)}},{passive:true});
 }else if(lamp){lamp.style.display='none'}
 var tt=document.getElementById('totop');
 function ts(){if(!tt)return;if(scrollY>700)tt.classList.add('show');else tt.classList.remove('show')}
