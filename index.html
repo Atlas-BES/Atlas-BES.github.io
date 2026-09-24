@@ -9,8 +9,19 @@
 <meta name="description" content="Atlas — Tech Extremist. DIY builds, chess, GitHub work, videos.">
 <meta name="theme-color" content="#f4ede1">
 <link rel="dns-prefetch" href="https://api.github.com">
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="preconnect" href="https://avatars.githubusercontent.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script>
+/* Atlas theme boot — system check first, no flash */
+(function(){try{
+  var saved=null; try{ saved=localStorage.getItem('atlas-theme'); }catch(e){}
+  var sysDark = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches;
+  var theme = (saved==='light'||saved==='dark') ? saved : (sysDark?'dark':'light');
+  document.documentElement.dataset.theme=theme;
+  document.documentElement.style.colorScheme=theme;
+}catch(e){}})();
+</script>
 <style>
 :root{
   --bg:#f4ede1; --bg2:#ece0cd; --cream:#fffaf0; --sand:#e8d8bd;
@@ -222,6 +233,65 @@ img{max-width:100%}
 ::-webkit-scrollbar{width:9px}::-webkit-scrollbar-track{background:#ece0cd}::-webkit-scrollbar-thumb{background:linear-gradient(#8b5e3c,#c19a6b);border-radius:99px}
 
 body.has-room{background:#2b2016}
+:root{color-scheme:light}
+/* ── DARK THEME (auto via system, overridable) ── */
+html[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#171009; --bg2:#20150e; --cream:#241a11; --sand:#33241a;
+  --coffee:#d9b77c; --espresso:#f4e8d3; --caramel:#c19a6b; --latte:#a67c52;
+  --bark:#d9a86c; --gold:#c19a6b;
+  --ink:#f2e6d2; --soft:#d3bda1; --muted:#a89276;
+  --card:rgba(42,30,19,.66); --stroke:rgba(255,220,170,.16);
+  --line:rgba(193,154,107,.24);
+  --shadow:0 24px 60px rgba(0,0,0,.5),0 6px 18px rgba(0,0,0,.4);
+  --shadow-sm:0 12px 32px rgba(0,0,0,.45);
+}
+html[data-theme="dark"] body{
+  background:
+    radial-gradient(1000px 600px at 10% 0%, rgba(193,154,107,.14), transparent 60%),
+    radial-gradient(900px 700px at 95% 12%, rgba(166,124,82,.12), transparent 60%),
+    radial-gradient(1000px 700px at 50% 110%, rgba(0,0,0,.5), transparent 60%),
+    linear-gradient(180deg,#241a11 0%,var(--bg) 45%,var(--bg2) 100%);
+}
+html[data-theme="dark"] body.has-room{background:#120c07}
+html[data-theme="dark"] nav,
+html[data-theme="dark"] .glass,
+html[data-theme="dark"] .eyebrow,
+html[data-theme="dark"] .mini,
+html[data-theme="dark"] .board-frame,
+html[data-theme="dark"] .panel,
+html[data-theme="dark"] .stat,
+html[data-theme="dark"] .proj,
+html[data-theme="dark"] .vid{
+  background:linear-gradient(135deg,rgba(42,30,19,.88),rgba(42,30,19,.62));
+  border-color:var(--stroke);
+  box-shadow:var(--shadow-sm),inset 0 1px 0 rgba(255,220,170,.12);
+}
+html[data-theme="dark"] .links a:hover{color:var(--espresso);background:rgba(193,154,107,.14)}
+html[data-theme="dark"] #game-status{background:rgba(42,30,19,.7)}
+html[data-theme="dark"] #game-status.check{background:#4a2a12;border-color:#e8a06b;color:#ffd9b3}
+html[data-theme="dark"] #game-status.win{background:#2a3a18;border-color:#8aa86b;color:#cfe8a8}
+html[data-theme="dark"] .promo{background:#241a11;border-color:rgba(255,220,170,.2)}
+html[data-theme="dark"] .promo button{background:#33241a;border-color:var(--line)}
+html[data-theme="dark"] .pill{background:rgba(255,220,170,.08)}
+html[data-theme="dark"] footer{background:linear-gradient(180deg,rgba(36,26,17,.7),#171009);border-top-color:rgba(255,220,170,.14)}
+html[data-theme="dark"] .logo-name{color:var(--espresso)}
+html[data-theme="dark"] h1.hero{color:var(--espresso)}
+html[data-theme="dark"] .stat b{color:var(--espresso)}
+html[data-theme="dark"] ::-webkit-scrollbar-track{background:#241a11}
+/* dark room wash: keep 3D visible but moody */
+html[data-theme="dark"] #roomOverlay{background:
+    radial-gradient(1100px 650px at 12% 0%, rgba(23,16,9,.30), transparent 60%),
+    radial-gradient(900px 700px at 92% 14%, rgba(23,16,9,.28), transparent 62%),
+    linear-gradient(180deg, rgba(23,16,9,.52) 0%, rgba(23,16,9,.58) 42%, rgba(32,21,14,.66) 100%);}
+html[data-theme="dark"] body.room-sharp #roomOverlay{background:linear-gradient(180deg, rgba(23,16,9,.30), rgba(23,16,9,.34) 50%, rgba(32,21,14,.40))}
+html[data-theme="dark"] #roomCanvas{filter:blur(1.1px) brightness(.82) saturate(1.05)}
+html[data-theme="dark"] body.room-sharp #roomCanvas{filter:blur(0px) brightness(.9) saturate(1.05)}
+html[data-theme="dark"] .room-glow{opacity:.25}
+html[data-theme="dark"] #lamp{background:radial-gradient(circle,rgba(255,200,130,.35),transparent 65%)}
+#themeToggle{font-size:.85rem;font-weight:700;padding:10px 16px;border-radius:999px;border:1px solid var(--stroke);background:var(--card);color:var(--ink);cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.4);transition:.25s}
+#themeToggle:hover{transform:translateY(-1px);color:var(--bark)}
+
 /* ── WEBGL BROWN STUDIO BACKDROP ── */
 #roomCanvas{position:fixed;inset:-30px;width:calc(100% + 60px);height:calc(100% + 60px);z-index:0;pointer-events:none;
   filter:blur(1.1px) brightness(.96) saturate(1.08);transform:scale(1.03);background:#2b2016}
@@ -271,7 +341,7 @@ body.room-sharp #roomOverlay{background:linear-gradient(180deg, rgba(250,245,234
   <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
   <div class="links" id="links">
     <a href="#hero">Home</a><a href="#board">Board</a><a href="#projects">Projects</a><a href="#videos">Videos</a>
-    <a class="cta" href="https://github.com/Atlas-BES" target="_blank" rel="noopener">GitHub ↗</a>
+    <a class="cta" href="https://github.com/Atlas-BES" target="_blank" rel="noopener">GitHub ↗</a><button id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark / light">🌙</button>
   </div>
 </nav>
 
@@ -391,7 +461,7 @@ body.room-sharp #roomOverlay{background:linear-gradient(180deg, rgba(250,245,234
 <button id="roomToggle" aria-label="Toggle 3D room"><span class="dotpulse"></span><span id="roomToggleLabel">3D Room · On</span></button>
 <script>
 /* independent: progress + nav + reveal (never blocked by other scripts) */
-(function(){var b=document.getElementById('pbar');function f(){var h=document.documentElement;var p=h.scrollTop/(h.scrollHeight-h.clientHeight||1)*100;if(b)b.style.width=p+'%'}addEventListener('scroll',f,{passive:true});f();
+(function(){var b=document.getElementById('pbar');var tick=false;function f(){var h=document.documentElement;var p=h.scrollTop/(h.scrollHeight-h.clientHeight||1)*100;if(b)b.style.width=p+'%';tick=false}function onS(){if(!tick){tick=true;requestAnimationFrame(f)}}addEventListener('scroll',onS,{passive:true});f();
 var bg=document.getElementById('burger'),lk=document.getElementById('links');if(bg)bg.onclick=function(){lk.classList.toggle('open')};if(lk)lk.onclick=function(e){if(e.target.tagName==='A')lk.classList.remove('open')};
 try{var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}})},{threshold:.08});document.querySelectorAll('.reveal').forEach(function(el){io.observe(el)});setTimeout(function(){document.querySelectorAll('.reveal').forEach(function(el){el.classList.add('visible')})},2500)}catch(e){document.querySelectorAll('.reveal').forEach(function(el){el.classList.add('visible')})}
 })();
@@ -491,12 +561,21 @@ function card(r){var suit=r.stars>2?'♛':(r.stars>0?'♜':'♟');var lang=r.lan
 function paint(list,note){grid.innerHTML=list.map(card).join('')+(note?'<div style="grid-column:1/-1;text-align:center;color:var(--muted);font-size:.85rem;padding:8px">'+note+'</div>':'')}
 var LC={JavaScript:'#b8860b',Python:'#3572A5',HTML:'#c96a2e',CSS:'#6d5aa8',TypeScript:'#3178c6',Shell:'#4d7c0f'};
 grid.innerHTML='<div class="proj glass"><h3>♟ Warming up the shelf…</h3><p>Fetching live repositories from GitHub.</p></div>';
-fetch('https://api.github.com/users/Atlas-BES/repos?sort=updated&per_page=9').then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(repos){
+(function(fetchLive){
+  try{
+    var c=JSON.parse(localStorage.getItem('atlas-repos')||'null');
+    if(c && Date.now()-c.t<36e5 && c.d && c.d.length){ paint(c.d.map(function(x){return{name:x.n,desc:x.d,lang:x.l,color:x.c,stars:x.s,forks:x.f,url:x.u}}),'● Cached · refreshing…'); }
+  }catch(e){}
+  fetchLive().then(function(repos){
+    try{ localStorage.setItem('atlas-repos',JSON.stringify({t:Date.now(),d:repos.map(function(x){return{n:x.name,d:x.description||'No description \u2014 click through to explore the code.',l:x.language||'',c:(LC[x.language]||'#a67c52'),s:x.stargazers_count||0,f:x.forks_count||0,u:x.html_url}})})); }catch(e){}
+    return repos;
+  }).then(function(repos){
  if(!Array.isArray(repos)||!repos.length)throw 0;
  var list=repos.map(function(x){return{name:x.name,desc:x.description||'No description — click through to explore the code.',lang:x.language||'',color:LC[x.language]||'#a67c52',stars:x.stargazers_count||0,forks:x.forks_count||0,url:x.html_url}});
  paint(list,'● Live from GitHub · updates automatically');
  fetch('https://api.github.com/users/Atlas-BES').then(function(r){return r.json()}).then(function(u){setNums(u.public_repos||list.length,'—',(function(){var s=0;list.forEach(function(x){s+=x.stars});return s})(),u.followers||'—')}).catch(function(){setNums(list.length,'—',(function(){var s=0;list.forEach(function(x){s+=x.stars});return s})(),'—')});
 }).catch(function(){paint(FALLBACK,'○ Offline shelf — showing house defaults · <a href="https://github.com/Atlas-BES" target="_blank" style="color:var(--bark);font-weight:700">open GitHub ↗</a>');setNums('—','—','—','—')});
+})(function(){return fetch('https://api.github.com/users/Atlas-BES/repos?sort=updated&per_page=9').then(function(r){if(!r.ok)throw 0;return r.json()})});
 function setNums(r,cm,s,f){set('s-repos',r);set('m-repos',r);set('s-stars',s);set('m-stars',s);set('s-followers',f);set('m-followers',f);set('s-commits',cm);
  var hl=document.getElementById('hero-line');if(hl)hl.textContent='♟ '+r+' repos · ★ '+s+' stars · '+f+' followers · fresh from GitHub'}
 function set(id,v){var e=document.getElementById(id);if(e)e.textContent=v}
@@ -575,7 +654,7 @@ var gs=document.getElementById('game-status');
 function boom(){
   if(!frm)return;var cols=['#8b5e3c','#c19a6b','#b07d4f','#6f4e37','#e5cfa8'];
   frm.style.position='relative';
-  for(var i=0;i<70;i++){var s=document.createElement('i');s.className='cfetti';s.style.left=(Math.random()*100)+'%';s.style.background=cols[i%cols.length];s.style.animationDuration=(1.4+Math.random()*1.4)+'s';frm.appendChild(s);(function(el){setTimeout(function(){el.remove()},3200)})(s)}
+  for(var i=0;i<(innerWidth<700?28:48);i++){var s=document.createElement('i');s.className='cfetti';s.style.left=(Math.random()*100)+'%';s.style.background=cols[i%cols.length];s.style.animationDuration=(1.4+Math.random()*1.4)+'s';frm.appendChild(s);(function(el){setTimeout(function(){el.remove()},3200)})(s)}
 }
 var won=false;
 if(gs&&'MutationObserver' in window){
@@ -586,6 +665,40 @@ if(gs&&'MutationObserver' in window){
 }
 document.querySelectorAll('[data-go]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();go(a.dataset.go)})});
 }catch(e){/* book extras stay optional */}
+})();
+</script>
+
+
+<script>
+/* THEME — follows system, remembers manual choice */
+(function(){
+  var mq = window.matchMedia ? matchMedia('(prefers-color-scheme: dark)') : null;
+  function current(){ return document.documentElement.dataset.theme==='dark'?'dark':'light'; }
+  function paint(btn){
+    var t=current();
+    if(btn) btn.textContent = t==='dark' ? '☀️' : '🌙';
+    btn&&btn.setAttribute('title', t==='dark'?'Switch to light mode':'Switch to dark mode');
+    var meta=document.querySelector('meta[name="theme-color"]');
+    if(meta) meta.setAttribute('content', t==='dark'?'#171009':'#f4ede1');
+    try{ window.dispatchEvent(new CustomEvent('atlas-theme',{detail:t})); }catch(e){}
+  }
+  var btn=document.getElementById('themeToggle');
+  // if system changes and user never picked manually, follow it
+  function sysChanged(e){
+    var saved=null; try{ saved=localStorage.getItem('atlas-theme'); }catch(_){}
+    if(saved) return;
+    document.documentElement.dataset.theme=e.matches?'dark':'light';
+    document.documentElement.style.colorScheme=current();
+    paint(btn);
+  }
+  if(mq){ try{ mq.addEventListener('change',sysChanged); }catch(e){ try{ mq.addListener(sysChanged); }catch(_){} } }
+  if(btn){ paint(btn); btn.addEventListener('click',function(){
+    var next=current()==='dark'?'light':'dark';
+    document.documentElement.dataset.theme=next;
+    document.documentElement.style.colorScheme=next;
+    try{ localStorage.setItem('atlas-theme',next); }catch(e){}
+    paint(btn);
+  });}
 })();
 </script>
 
@@ -619,13 +732,14 @@ if(tgl){ tgl.addEventListener('click', ()=>{
   }
 });}
 
+const lowPower = (navigator.connection&&navigator.connection.saveData) || innerWidth<700 || (navigator.hardwareConcurrency||8)<=4;
 let renderer;
 try{
-  renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:false});
+  renderer = new THREE.WebGLRenderer({canvas, antialias:!lowPower, alpha:false, powerPreference:'low-power'});
 }catch(e){ canvas.style.display='none'; return; }
-renderer.setPixelRatio(Math.min(devicePixelRatio||1, 1.75));
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.setPixelRatio(Math.min(devicePixelRatio||1, lowPower?1:1.25));
+renderer.shadowMap.enabled = !lowPower;
+renderer.shadowMap.type = THREE.PCFShadowMap;
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.12;
@@ -979,7 +1093,7 @@ sunLight.position.set(-1.2,3.2,-1.5);
 sunLight.target.position.set(1.5,0,3.5);
 scene.add(sunLight); scene.add(sunLight.target);
 sunLight.castShadow=true;
-sunLight.shadow.mapSize.set(1024,1024);
+sunLight.shadow.mapSize.set(lowPower?512:1024,lowPower?512:1024);
 sunLight.shadow.camera.left=-7; sunLight.shadow.camera.right=7;
 sunLight.shadow.camera.top=7; sunLight.shadow.camera.bottom=-7;
 const fill=new THREE.DirectionalLight(0xd9b98a, 0.35); fill.position.set(4,3,5); scene.add(fill);
@@ -987,7 +1101,7 @@ const fill=new THREE.DirectionalLight(0xd9b98a, 0.35); fill.position.set(4,3,5);
 // ---------- DUST ----------
 let dust;
 {
-  const N=220; const pos=new Float32Array(N*3);
+  const N=(lowPower?90:180); const pos=new Float32Array(N*3);
   for(let i=0;i<N;i++){ pos[i*3]=(Math.random()-0.5)*11; pos[i*3+1]=Math.random()*4+0.2; pos[i*3+2]=-4.5+Math.random()*9; }
   const g=new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos,3));
   dust=new THREE.Points(g, new THREE.PointsMaterial({color:0xffe6b8,size:0.035,transparent:true,opacity:0.55,depthWrite:false}));
@@ -1099,12 +1213,29 @@ addEventListener('scroll',()=>{ const h=document.documentElement; scrollP=h.scro
 
 function resize(){ camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); renderer.setSize(innerWidth,innerHeight,false); }
 addEventListener('resize',resize); resize();
+  // adapt room mood to light/dark theme
+  const __root=document.documentElement;
+  function applyRoomTheme(){
+    const dark=__root.dataset.theme==='dark';
+    renderer.toneMappingExposure=dark?0.95:1.12;
+    const bg=new THREE.Color(dark?0x140d08:0x3a2c1f);
+    scene.background=bg; scene.fog.color.copy(bg);
+    if(sunLight) sunLight.intensity=dark?0.85:1.6;
+  }
+  applyRoomTheme();
+  new MutationObserver(applyRoomTheme).observe(__root,{attributes:true,attributeFilter:['data-theme']});
+  addEventListener('atlas-theme',applyRoomTheme);
+
 
 let t0=performance.now();
 const clock=new THREE.Clock();
-function frame(){
+let lastFrame=0;
+function frame(now){
   requestAnimationFrame(frame);
-  if(paused && reduceMotion===false && document.body.dataset.roomOff==='1') return;
+  if(document.hidden) return;
+  if(paused && document.body.dataset.roomOff==='1') return;
+  if(now && now-lastFrame<33) return; // ~30fps cap for background
+  lastFrame=now||0;
   const dt=Math.min(clock.getDelta(),0.05);
   const t=clock.elapsedTime;
 
@@ -1131,10 +1262,7 @@ function frame(){
   }
   renderer.render(scene,camera);
 }
-frame();
-
-// pause when tab hidden
-document.addEventListener('visibilitychange',()=>{ if(document.hidden) renderer.render(scene,camera); });
+requestAnimationFrame(frame);
 })();
 </script>
 
