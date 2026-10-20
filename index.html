@@ -260,13 +260,6 @@ footer a:hover{color:var(--bark)}
 .pager .pg-num{font-family:var(--fd);font-style:italic;color:var(--muted);font-size:.92rem}
 .page-rule{display:flex;align-items:center;gap:12px;max-width:1180px;margin:0 auto;padding:36px 28px 0;color:var(--caramel);position:relative;z-index:2;font-size:.95rem}
 .page-rule::before,.page-rule::after{content:'';height:1px;flex:1;background:linear-gradient(90deg,transparent,var(--line),transparent)}
-#rail{position:fixed;right:16px;top:50%;transform:translateY(-50%);z-index:90;display:flex;flex-direction:column;gap:8px}
-#rail button{position:relative;border:1px solid var(--stroke);background:var(--card);backdrop-filter:blur(12px);color:var(--bark);font-family:var(--fd);font-style:italic;font-size:.72rem;width:38px;height:38px;border-radius:50%;cursor:pointer;box-shadow:var(--shadow-sm);transition:.25s}
-#rail button:hover{transform:scale(1.12)}
-#rail button.on{background:linear-gradient(135deg,#6f4e37,#a67c52);color:#fffaf0;border-color:rgba(255,255,255,.6)}
-#rail button .tip{position:absolute;right:46px;top:50%;transform:translateY(-50%);white-space:nowrap;font-family:var(--fb);font-style:normal;font-size:.72rem;font-weight:700;letter-spacing:.05em;background:#3e2f23;color:#fffaf0;padding:6px 12px;border-radius:99px;opacity:0;pointer-events:none;transition:.2s}
-#rail button:hover .tip{opacity:1}
-@media(max-width:1150px){#rail{display:none}}
 #lamp{position:fixed;left:50%;top:24%;width:560px;height:560px;margin:-280px 0 0 -280px;border-radius:50%;pointer-events:none;z-index:1;background:radial-gradient(circle,rgba(255,233,190,.5),transparent 65%);mix-blend-mode:soft-light}
 #totop{position:fixed;right:20px;bottom:22px;z-index:90;width:52px;height:60px;border-radius:14px 14px 18px 18px;border:1px solid rgba(255,250,240,.5);background:linear-gradient(180deg,#8b5e3c,#6f4e37);color:#fffaf0;font-size:1.1rem;cursor:pointer;box-shadow:var(--shadow);clip-path:polygon(0 0,100% 0,100% 100%,50% 88%,0 100%);opacity:0;transform:translateY(12px);pointer-events:none;transition:.3s}
 #totop.show{opacity:1;transform:none;pointer-events:auto}
@@ -379,13 +372,6 @@ body.room-sharp #roomOverlay{background:linear-gradient(180deg, rgba(250,245,234
 <canvas id="chessCanvas"></canvas>
 <div class="progress"><i id="pbar"></i></div>
 <div id="lamp" aria-hidden="true"></div>
-<nav id="rail" aria-label="Book chapters">
-  <button data-t="hero" class="on" aria-label="Prologue">P<span class="tip">Prologue · Cover</span></button>
-  <button data-t="board" aria-label="Chapter 1">I<span class="tip">Chapter I · Chess</span></button>
-  <button data-t="stats" aria-label="Chapter 2">II<span class="tip">Chapter II · Numbers</span></button>
-  <button data-t="projects" aria-label="Chapter 3">III<span class="tip">Chapter III · Projects</span></button>
-  <button data-t="videos" aria-label="Chapter 4">IV<span class="tip">Chapter IV · Videos</span></button>
-</nav>
 <button id="totop" aria-label="Back to top">↑</button>
 <nav>
     <a class="logo" href="#hero" aria-label="Atlas — home">
@@ -653,13 +639,6 @@ fetch('https://api.github.com/users/Atlas-BES/events?per_page=100').then(functio
 try{
 var chapters=['hero','board','stats','projects','videos'];
 function go(id){var el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}
-var rail=document.getElementById('rail');
-var btns=rail?Array.prototype.slice.call(rail.querySelectorAll('button')):[];
-btns.forEach(function(b){b.addEventListener('click',function(){go(b.dataset.t)})});
-if('IntersectionObserver' in window){
-  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){btns.forEach(function(b){b.classList.toggle('on',b.dataset.t===e.target.id)})}})},{rootMargin:'-40% 0px -55% 0px'});
-  chapters.forEach(function(id){var el=document.getElementById(id);if(el)io.observe(el)});
-}
 function current(){var best=0,bd=1e12;chapters.forEach(function(id,i){var el=document.getElementById(id);if(!el)return;var d=Math.abs(el.getBoundingClientRect().top-120);if(d<bd){bd=d;best=i}});return best}
 addEventListener('keydown',function(e){
   if(e.target&&(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'))return;
